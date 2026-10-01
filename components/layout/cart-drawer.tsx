@@ -6,6 +6,7 @@ import Link from "next/link";
 import { X, ShoppingBag, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MOCK_BOOKS } from "@/lib/mock-data";
+import { formatNpr } from "@/lib/currency";
 
 interface CartDrawerProps {
   open: boolean;
@@ -52,10 +53,10 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
   return (
     <>
       <div 
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 transition-opacity animate-in fade-in" 
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] transition-opacity animate-in fade-in" 
         onClick={onClose}
       />
-      <div className="fixed inset-y-0 right-0 w-full md:w-[450px] bg-background shadow-2xl z-50 flex flex-col animate-in slide-in-from-right duration-300 border-l border-border">
+      <div className="fixed inset-y-0 right-0 w-full md:w-[450px] bg-background shadow-2xl z-[101] flex flex-col animate-in slide-in-from-right duration-300 border-l border-border">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-border">
           <div className="flex items-center gap-2">
@@ -117,7 +118,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                     </div>
                     
                     <div className="font-medium text-sm">
-                      ${((item.book.discountedPrice || item.book.price) * item.quantity).toFixed(2)}
+                      {formatNpr((item.book.discountedPrice || item.book.price) * item.quantity)}
                     </div>
                   </div>
                   
@@ -139,15 +140,15 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
+                <span>{formatNpr(subtotal)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Shipping</span>
-                <span>{shipping === 0 ? <span className="text-green-600 font-medium text-xs bg-green-100 px-2 py-0.5 rounded-sm dark:bg-green-900/30 dark:text-green-400">Free</span> : `$${shipping.toFixed(2)}`}</span>
+                <span>{shipping === 0 ? <span className="text-green-600 font-medium text-xs bg-green-100 px-2 py-0.5 rounded-sm dark:bg-green-900/30 dark:text-green-400">Free</span> : formatNpr(shipping)}</span>
               </div>
               <div className="border-t border-border pt-2 mt-2 flex justify-between font-serif text-lg font-bold">
                 <span>Total</span>
-                <span>${total.toFixed(2)}</span>
+                <span>{formatNpr(total)}</span>
               </div>
             </div>
             

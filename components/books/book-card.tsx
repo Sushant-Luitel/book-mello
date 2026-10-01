@@ -6,6 +6,7 @@ import { Star, ShoppingCart, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast";
+import { formatNpr } from "@/lib/currency";
 
 interface BookCardProps {
   book: {
@@ -72,11 +73,11 @@ export function BookCard({ book }: BookCardProps) {
           <div className="flex items-center gap-2">
             {book.discountedPrice ? (
               <>
-                <span className="font-semibold text-lg">${book.discountedPrice.toFixed(2)}</span>
-                <span className="text-sm text-muted-foreground line-through">${book.price.toFixed(2)}</span>
+                <span className="font-semibold text-lg">{formatNpr(book.discountedPrice)}</span>
+                <span className="text-sm text-muted-foreground line-through">{formatNpr(book.price)}</span>
               </>
             ) : (
-              <span className="font-semibold text-lg">${book.price.toFixed(2)}</span>
+              <span className="font-semibold text-lg">{formatNpr(book.price)}</span>
             )}
           </div>
         </div>

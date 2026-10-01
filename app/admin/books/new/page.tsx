@@ -119,11 +119,11 @@ export default function NewBookPage() {
             
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Price ($)</label>
+                <label className="text-sm font-medium">Price (NPR)</label>
                 <Input type="number" placeholder="0.00" step="0.01" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Compare at Price ($)</label>
+                <label className="text-sm font-medium">Compare at Price (NPR)</label>
                 <Input type="number" placeholder="0.00" step="0.01" />
                 <p className="text-xs text-muted-foreground">To show a discounted price, enter the original price here.</p>
               </div>

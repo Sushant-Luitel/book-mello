@@ -17,7 +17,7 @@ export default function AdminOverviewPage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$45,231.89</div>
+            <div className="text-2xl font-bold">NPR 45,231.89</div>
             <p className="text-xs text-green-500 flex items-center mt-1">
               <ArrowUpRight className="h-3 w-3 mr-1" />
               +20.1% from last month
@@ -76,7 +76,7 @@ export default function AdminOverviewPage() {
               {[40, 70, 45, 90, 65, 85, 120, 95, 110, 140, 120, 160].map((h, i) => (
                 <div key={i} className="w-full bg-primary/20 hover:bg-primary/40 rounded-t-sm transition-colors relative group" style={{ height: `${(h/160)*100}%` }}>
                   <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-popover text-popover-foreground text-xs px-2 py-1 rounded shadow-sm">
-                    ${h}k
+                    NPR {h}k
                   </div>
                 </div>
               ))}
@@ -116,7 +116,7 @@ export default function AdminOverviewPage() {
                       <p className="text-xs text-muted-foreground">{order.email}</p>
                     </div>
                   </div>
-                  <div className="font-medium text-sm">+${order.amount.toFixed(2)}</div>
+                  <div className="font-medium text-sm">+NPR {order.amount.toFixed(2)}</div>
                 </div>
               ))}
             </div>

@@ -2,14 +2,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { MOCK_BOOKS, MOCK_CATEGORIES } from "@/lib/mock-data";
+import { getBooks } from "@/lib/books";
 import { BookCard } from "@/components/books/book-card";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 
-export default function Home() {
-  const featuredBooks = MOCK_BOOKS.slice(0, 4);
-  const newArrivals = MOCK_BOOKS.filter(b => b.isNew).concat(MOCK_BOOKS.slice(4, 6));
+export default async function Home() {
+  const books = await getBooks();
+  const featuredBooks = books.slice(0, 4);
+  const newArrivals = books.filter(b => b.isNew).concat(books.filter(b => !b.isNew).slice(0, 2));
+  const categories = [...new Set(books.map((book) => book.category).filter(Boolean))] as string[];
 
   return (
     <>
@@ -55,7 +57,7 @@ export default function Home() {
               <div className="flex items-center justify-center lg:justify-end">
                 <div className="relative w-[280px] h-[400px] md:w-[320px] md:h-[460px] transform rotate-3 hover:rotate-0 transition-transform duration-500 shadow-2xl rounded-lg overflow-hidden">
                   <Image
-                    src={MOCK_BOOKS[0].cover}
+                    src={books[0]?.cover ?? "/file.svg"}
                     alt="Featured Book"
                     fill
                     className="object-cover"
@@ -98,7 +100,7 @@ export default function Home() {
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-              {MOCK_CATEGORIES.map((category, i) => (
+              {categories.map((category) => (
                 <Link 
                   key={category} 
                   href={`/shop?category=${encodeURIComponent(category)}`}
@@ -150,8 +152,8 @@ export default function Home() {
             
             <div className="relative z-10 w-full max-w-sm">
               <div className="grid grid-cols-2 gap-4 transform rotate-6">
-                <Image src={MOCK_BOOKS[1].cover} alt="Book" width={160} height={240} className="rounded-lg shadow-xl" />
-                <Image src={MOCK_BOOKS[2].cover} alt="Book" width={160} height={240} className="rounded-lg shadow-xl -mt-8" />
+                <Image src={books[1]?.cover ?? "/file.svg"} alt="Book" width={160} height={240} className="rounded-lg shadow-xl" />
+                <Image src={books[2]?.cover ?? "/file.svg"} alt="Book" width={160} height={240} className="rounded-lg shadow-xl -mt-8" />
               </div>
             </div>
           </div>

@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Filter, SlidersHorizontal, ChevronDown } from "lucide-react";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { BookCard } from "@/components/books/book-card";
-import { MOCK_BOOKS, MOCK_CATEGORIES } from "@/lib/mock-data";
+import type { StoreBook } from "@/lib/book-shape";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select } from "@/components/ui/select";
@@ -13,16 +13,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ShopPage() {
   const [loading, setLoading] = useState(true);
+  const [books, setBooks] = useState<StoreBook[]>([]);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   
-  // Simulate loading
-  useState(() => {
-    const timer = setTimeout(() => setLoading(false), 800);
-    return () => clearTimeout(timer);
-  });
+  useEffect(() => { fetch("/api/v1/books").then((response) => response.json()).then((body) => setBooks(body.data ?? [])).catch(() => setBooks([])).finally(() => setLoading(false)); }, []);
+  const categories = [...new Set(books.map((book) => book.category).filter(Boolean))] as string[];
+  const allBooks = books;
 
-  // Duplicate books to make the grid look full for demo
-  const allBooks = [...MOCK_BOOKS, ...MOCK_BOOKS.map(b => ({...b, id: b.id + "_copy"}))];
+  console.log("Fetched books:", allBooks);
 
   return (
     <>
@@ -33,7 +31,7 @@ export default function ShopPage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold font-serif tracking-tight mb-2">All Books</h1>
-              <p className="text-muted-foreground">Showing 1-12 of 24 results</p>
+              <p className="text-muted-foreground">Showing {allBooks.length} results</p>
             </div>
             
             <div className="flex items-center gap-2">
@@ -68,7 +66,7 @@ export default function ShopPage() {
                     Categories
                   </h3>
                   <div className="space-y-3">
-                    {MOCK_CATEGORIES.map(category => (
+                    {categories.map(category => (
                       <div key={category} className="flex items-center space-x-2">
                         <Checkbox id={`category-${category}`} />
                         <label
@@ -88,19 +86,19 @@ export default function ShopPage() {
                   <div className="space-y-3">
                     <div className="flex items-center space-x-2">
                       <Checkbox id="price-1" />
-                      <label htmlFor="price-1" className="text-sm font-medium cursor-pointer">Under $10</label>
+                        <label htmlFor="price-1" className="text-sm font-medium cursor-pointer">Under NPR 1,000</label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox id="price-2" />
-                      <label htmlFor="price-2" className="text-sm font-medium cursor-pointer">$10 - $25</label>
+                        <label htmlFor="price-2" className="text-sm font-medium cursor-pointer">NPR 1,000 - 2,500</label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox id="price-3" />
-                      <label htmlFor="price-3" className="text-sm font-medium cursor-pointer">$25 - $50</label>
+                        <label htmlFor="price-3" className="text-sm font-medium cursor-pointer">NPR 2,500 - 5,000</label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox id="price-4" />
-                      <label htmlFor="price-4" className="text-sm font-medium cursor-pointer">Over $50</label>
+                        <label htmlFor="price-4" className="text-sm font-medium cursor-pointer">Over NPR 5,000</label>
                     </div>
                   </div>
                 </div>

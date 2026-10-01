@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import { Eye, EyeOff, BookOpen, KeySquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,11 +12,20 @@ import { Checkbox } from "@/components/ui/checkbox";
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => setIsLoading(false), 1500);
+    setError("");
+    const supabase = createClient();
+    const result = await supabase.auth.signInWithPassword({ email, password });
+    if (result.error) setError(result.error.message);
+    else router.push("/admin");
+    setIsLoading(false);
   };
 
   return (
@@ -56,9 +67,10 @@ export default function LoginPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {error && <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>}
             <div className="space-y-2">
               <label className="text-sm font-medium" htmlFor="email">Email</label>
-              <Input id="email" type="email" placeholder="you@example.com" required />
+              <Input id="email" type="email" placeholder="you@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
 
             <div className="space-y-2">
@@ -73,6 +85,8 @@ export default function LoginPage() {
                   placeholder="••••••••" 
                   required 
                   className="pr-10"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 <button 
                   type="button" 

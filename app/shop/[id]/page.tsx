@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -9,15 +9,19 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MOCK_BOOKS } from "@/lib/mock-data";
+import type { StoreBook } from "@/lib/book-shape";
+import { formatNpr } from "@/lib/currency";
 
 export default function BookDetailsPage() {
   const params = useParams();
   const bookId = params.id as string;
-  const book = MOCK_BOOKS.find(b => b.id === bookId) || MOCK_BOOKS[0];
+  const [book, setBook] = useState<StoreBook | null>(null);
+  useEffect(() => { fetch(`/api/v1/books/${bookId}`).then((response) => response.json()).then((body) => setBook(body.data ?? null)).catch(() => setBook(null)); }, [bookId]);
   
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("description");
+
+  if (!book) return <main className="min-h-screen flex items-center justify-center">Loading book…</main>;
 
   return (
     <>
@@ -84,23 +88,23 @@ export default function BookDetailsPage() {
               <div className="flex items-end gap-3 mb-6">
                 {book.discountedPrice ? (
                   <>
-                    <span className="text-3xl font-bold">${book.discountedPrice.toFixed(2)}</span>
-                    <span className="text-lg text-muted-foreground line-through mb-1">${book.price.toFixed(2)}</span>
+                    <span className="text-3xl font-bold">{formatNpr(book.discountedPrice)}</span>
+                    <span className="text-lg text-muted-foreground line-through mb-1">{formatNpr(book.price)}</span>
                     <Badge variant="destructive" className="mb-2">Sale</Badge>
                   </>
                 ) : (
-                  <span className="text-3xl font-bold">${book.price.toFixed(2)}</span>
+                  <span className="text-3xl font-bold">{formatNpr(book.price)}</span>
                 )}
               </div>
 
-              <p className="text-muted-foreground mb-8 leading-relaxed line-clamp-3">
-                A captivating masterpiece that will keep you turning the pages long into the night. {book.title} explores themes of love, loss, and the human condition in a way that only {book.author} can deliver. 
+              <p className="text-muted-foreground mb-8 leading-relaxed line-clamp-3 whitespace-pre-line">
+                {book.description ?? `${book.title} by ${book.author}.`}
               </p>
 
               <div className="space-y-4 mb-8">
                 <div className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-green-600 dark:text-green-400" />
-                  <span className="font-medium text-green-700 dark:text-green-300">In Stock ({book.stock} available)</span>
+                  <Check className={`h-4 w-4 ${book.stock ? "text-green-600" : "text-red-600"}`} />
+                  <span className={`font-medium ${book.stock ? "text-green-700 dark:text-green-300" : "text-red-700 dark:text-red-300"}`}>{book.stock ? "In Stock" : "Out of Stock"}</span>
                 </div>
                 
                 <div className="flex items-center gap-4">
@@ -113,12 +117,12 @@ export default function BookDetailsPage() {
                     <span className="w-12 text-center font-medium">{quantity}</span>
                     <button 
                       className="px-3 py-2 text-muted-foreground hover:bg-muted transition-colors disabled:opacity-50"
-                      onClick={() => setQuantity(Math.min(book.stock, quantity + 1))}
-                      disabled={quantity >= book.stock}
+                      onClick={() => setQuantity(Math.min(99, quantity + 1))}
+                      disabled={!book.stock || quantity >= 99}
                     >+</button>
                   </div>
                   
-                  <Button size="lg" className="flex-1 gap-2 text-base">
+                  <Button size="lg" className="flex-1 gap-2 text-base" disabled={!book.stock}>
                     <ShoppingCart className="h-5 w-5" /> Add to Cart
                   </Button>
                   
@@ -131,7 +135,7 @@ export default function BookDetailsPage() {
               <div className="border-t border-border pt-6 space-y-4">
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                   <Truck className="h-5 w-5" />
-                  <span>Free shipping on orders over $50</span>
+                  <span>Free shipping on orders over NPR 5,000</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                   <ShieldCheck className="h-5 w-5" />
@@ -170,12 +174,7 @@ export default function BookDetailsPage() {
             <div className="py-8">
               {activeTab === 'description' && (
                 <div className="prose dark:prose-invert max-w-4xl space-y-4 text-muted-foreground">
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                  </p>
-                  <p>
-                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                  </p>
+                  <p className="whitespace-pre-line">{book.description ?? "No description is available for this book."}</p>
                   <h3 className="text-xl font-serif font-bold text-foreground mt-8 mb-4">About the Author</h3>
                   <p>
                     {book.author} is an award-winning writer known for their captivating storytelling and deeply human characters. They currently reside in a cozy cabin surrounded by thousands of books.
