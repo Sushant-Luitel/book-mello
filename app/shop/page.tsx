@@ -30,7 +30,7 @@ function ShopContent() {
     <>
       <Navbar />
       <main className="flex-1 flex flex-col min-h-screen bg-muted/20">
-        <div className="container px-4 md:px-6 py-8 mx-auto flex-1">
+        <div className="container px-4 sm:px-6 lg:px-8 py-8 sm:py-12 mx-auto flex-1">
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
             <div>

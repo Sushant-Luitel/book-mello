@@ -1,10 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" role="img" aria-labelledby="title desc">
-  <title id="title">BookMello</title>
-  <desc id="desc">BookMello blue and gold circular mark with the BookMello wordmark.</desc>
-  <rect width="900" height="420" fill="#fff"/>
-  <g transform="translate(450 132)">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 80" fill="none" role="img" aria-labelledby="bm-logo-title">
+  <title id="bm-logo-title">BookMello</title>
+  <!-- Icon Mark -->
+  <g transform="translate(42, 40) scale(0.32)">
     <path fill="#e5a916" d="M-96 23a104 104 0 1 1 193 1L5-35a55 55 0 0 0-36-14z"/>
-    <path fill="#2e73b5" d="M-55 48 91 9c18 40 5 84-30 108-34 24-71 18-92-12l60-39-37-21zm91 29c17-12 24-31 20-48l-35 20c8 13 10 21 15 28z"/>
+    <path fill="#1f64af" d="M-55 48 91 9c18 40 5 84-30 108-34 24-71 18-92-12l60-39-37-21zm91 29c17-12 24-31 20-48l-35 20c8 13 10 21 15 28z"/>
   </g>
-  <text x="450" y="330" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="82" font-weight="700" fill="#2e73b5">Book<tspan fill="#666">Mello</tspan></text>
+  <!-- Brand Text -->
+  <text x="86" y="52" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="34" font-weight="700" letter-spacing="-0.5px">
+    <tspan fill="#1f64af">Book</tspan><tspan fill="#374151">Mello</tspan>
+    <tspan font-size="16" dy="-14" font-weight="600" fill="#6b7280">™</tspan>
+  </text>
 </svg>

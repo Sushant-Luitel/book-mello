@@ -34,37 +34,64 @@ export function Navbar() {
 
   return (
     <>
+    {/* Top Announcement / Trust Bar */}
+    <div className="bg-[#1F64AF] text-white text-xs py-1.5 px-4 text-center font-medium tracking-wide">
+      <div className="container mx-auto flex items-center justify-center gap-4 sm:gap-6 flex-wrap">
+        <span className="flex items-center gap-1.5">
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#E5A116] animate-pulse"></span>
+          Delivered Across Nepal • Cash On Delivery Available
+        </span>
+        <a 
+          href="https://wa.me/9779717028478" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="hidden sm:inline-flex items-center gap-1 hover:underline text-white/90"
+        >
+          <span>WhatsApp:</span> <span className="font-semibold">+977 9717028478</span>
+        </a>
+      </div>
+    </div>
+
     <header
       className={cn(
         "sticky top-0 z-50 w-full transition-all duration-300",
         isScrolled
-          ? "bg-secondary/95 backdrop-blur-md border-b border-border shadow-sm py-3"
-          : "bg-secondary/95 backdrop-blur-md border-b border-border py-5"
+          ? "bg-background/90 backdrop-blur-md border-b border-border/80 shadow-xs py-2.5"
+          : "bg-background/80 backdrop-blur-sm border-b border-border/40 py-3.5"
       )}
     >
       <div className="container mx-auto px-4 md:px-6">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group" aria-label="BookMello home">
-            <Image src="/bookmello-logo.png" alt="BookMello" width={126} height={59} priority className="h-12 w-auto object-contain" />
+          <Link href="/" className="flex items-center gap-2 group shrink-0" aria-label="BookMello home">
+            <Image 
+              src="/bookmello-logo.svg" 
+              alt="BookMello" 
+              width={160} 
+              height={40} 
+              priority 
+              className="h-8 sm:h-9 w-auto object-contain dark:brightness-110" 
+            />
           </Link>
   
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-7">
             <Link href="/" className={navClass("/")}>Home</Link>
-            <Link href="/shop" className={navClass("/shop")}>Shop</Link>
+            <Link href="/shop" className={navClass("/shop")}>Shop All</Link>
+            <Link href="/shop?filter=featured" className="text-sm font-medium hover:text-accent transition-colors">Staff Picks</Link>
+            <Link href="/shop?filter=new" className="text-sm font-medium hover:text-accent transition-colors">New Arrivals</Link>
           </nav>
 
           {/* Actions */}
-          <div className="hidden md:flex items-center gap-4">
-            <form className="relative w-64" onSubmit={submitSearch}>
+          <div className="hidden md:flex items-center gap-3">
+            <form className="relative w-56 lg:w-64" onSubmit={submitSearch}>
               <label htmlFor="desktop-book-search" className="sr-only">Search books and authors</label>
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 id="desktop-book-search"
                 type="search"
                 placeholder="Search books, authors..."
-                className="w-full pl-9 bg-background/50 border-border/50 focus-visible:bg-background"
+                className="w-full pl-9 h-9 text-sm bg-muted/40 border-border/60 focus-visible:bg-background rounded-full transition-all"
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
               />
@@ -73,42 +100,57 @@ export function Navbar() {
             <Button
               variant="ghost"
               size="icon"
+              className="h-9 w-9 rounded-full"
               aria-label="Toggle color theme"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             >
-              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
               <span className="sr-only">Toggle theme</span>
             </Button>
 
             <Link href="/login">
-              <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full" aria-label="Account">
+                <User className="h-4 w-4" />
               </Button>
             </Link>
 
-            <Button variant="outline" size="icon" aria-label="Open shopping cart" className="relative border-border/50" onClick={() => setCartOpen(true)}>
-              <ShoppingCart className="h-5 w-5" />
-              <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-[10px]">
+            <Button 
+              variant="outline" 
+              size="icon" 
+              aria-label="Open shopping cart" 
+              className="relative h-9 w-9 rounded-full border-border/60 hover:border-accent hover:text-accent transition-colors" 
+              onClick={() => setCartOpen(true)}
+            >
+              <ShoppingCart className="h-4 w-4" />
+              <Badge className="absolute -top-1.5 -right-1.5 h-4 min-w-4 px-1 flex items-center justify-center p-0 text-[10px] bg-[#E5A116] text-slate-900 font-bold border-none">
                 2
               </Badge>
             </Button>
           </div>
 
           {/* Mobile Menu Toggle */}
-          <div className="flex md:hidden items-center gap-4">
-            <Button variant="outline" size="icon" aria-label="Open shopping cart" className="relative border-border/50" onClick={() => setCartOpen(true)}>
-              <ShoppingCart className="h-5 w-5" />
-              <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-[10px]">
+          <div className="flex md:hidden items-center gap-2">
+            <Button 
+              variant="outline" 
+              size="icon" 
+              aria-label="Open shopping cart" 
+              className="relative h-9 w-9 rounded-full border-border/60" 
+              onClick={() => setCartOpen(true)}
+            >
+              <ShoppingCart className="h-4 w-4" />
+              <Badge className="absolute -top-1.5 -right-1.5 h-4 min-w-4 px-1 flex items-center justify-center p-0 text-[10px] bg-[#E5A116] text-slate-900 font-bold border-none">
                 2
               </Badge>
             </Button>
             <Button
               variant="ghost"
               size="icon"
+              className="h-9 w-9 rounded-full"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Open menu"
             >
-              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
         </div>
@@ -116,24 +158,26 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-secondary border-b border-border p-4 shadow-lg flex flex-col gap-4 animate-in slide-in-from-top-2">
+        <div className="md:hidden absolute top-full left-0 w-full bg-background border-b border-border p-4 shadow-xl flex flex-col gap-4 animate-in slide-in-from-top-2">
           <form className="relative w-full" onSubmit={submitSearch}>
             <label htmlFor="mobile-book-search" className="sr-only">Search books and authors</label>
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
               id="mobile-book-search"
               type="search"
               placeholder="Search books, authors..."
-              className="w-full pl-9"
+              className="w-full pl-9 h-10 rounded-full bg-muted/40"
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
             />
           </form>
-          <nav className="flex flex-col gap-2">
-            <Link href="/" className={cn("px-4 py-3 rounded-md hover:bg-secondary font-medium", pathname === "/" && "bg-secondary text-accent")} onClick={() => setMobileMenuOpen(false)}>Home</Link>
-            <Link href="/shop" className={cn("px-4 py-3 rounded-md hover:bg-secondary font-medium", pathname === "/shop" && "bg-secondary text-accent")} onClick={() => setMobileMenuOpen(false)}>Shop</Link>
+          <nav className="flex flex-col gap-1">
+            <Link href="/" className={cn("px-4 py-2.5 rounded-lg hover:bg-muted font-medium transition-colors", pathname === "/" && "bg-muted text-accent")} onClick={() => setMobileMenuOpen(false)}>Home</Link>
+            <Link href="/shop" className={cn("px-4 py-2.5 rounded-lg hover:bg-muted font-medium transition-colors", pathname === "/shop" && "bg-muted text-accent")} onClick={() => setMobileMenuOpen(false)}>Shop All</Link>
+            <Link href="/shop?filter=featured" className="px-4 py-2.5 rounded-lg hover:bg-muted font-medium transition-colors" onClick={() => setMobileMenuOpen(false)}>Staff Picks</Link>
+            <Link href="/shop?filter=new" className="px-4 py-2.5 rounded-lg hover:bg-muted font-medium transition-colors" onClick={() => setMobileMenuOpen(false)}>New Arrivals</Link>
             <div className="h-px bg-border my-2"></div>
-            <Link href="/login" className="px-4 py-3 rounded-md hover:bg-secondary font-medium flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
+            <Link href="/login" className="px-4 py-2.5 rounded-lg hover:bg-muted font-medium flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
               <User className="h-4 w-4" /> Account
             </Link>
             <button 

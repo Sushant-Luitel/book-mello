@@ -28,6 +28,10 @@
   --color-terracotta-dark: #C2634C;
   --color-forest: #2C4A3B;
   --color-forest-dark: #1E3329;
+  --color-brand-blue: #1F64AF;
+  --color-brand-blue-dark: #154D8A;
+  --color-brand-gold: #E5A116;
+  --color-brand-gold-hover: #D09010;
   
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
@@ -38,48 +42,48 @@
 }
 
 :root {
-  --background: #FAF6F0;
-  --foreground: #2A2522;
+  --background: #FAF8F5;
+  --foreground: #221D1A;
   --card: #FFFFFF;
-  --card-foreground: #2A2522;
+  --card-foreground: #221D1A;
   --popover: #FFFFFF;
-  --popover-foreground: #2A2522;
-  --primary: #4A3A35; /* Deep Brown */
-  --primary-foreground: #FAF6F0;
-  --secondary: #E2D8CC;
-  --secondary-foreground: #2A2522;
-  --muted: #E8DED3;
-  --muted-foreground: #5F554F;
-  --accent: #D87D65; /* Terracotta CTA */
-  --accent-foreground: #FFFFFF;
+  --popover-foreground: #221D1A;
+  --primary: #2C2420;
+  --primary-foreground: #FAF8F5;
+  --secondary: #F3ECE3;
+  --secondary-foreground: #221D1A;
+  --muted: #EDE5DC;
+  --muted-foreground: #6B625B;
+  --accent: #E5A116;
+  --accent-foreground: #1E1A17;
   --destructive: #B74B4B;
   --destructive-foreground: #FFFFFF;
-  --border: #CDBEAE;
-  --input: #BFAE9D;
-  --ring: #4A3A35;
-  --radius: 0.75rem; /* 12px */
+  --border: #E5DDD3;
+  --input: #D9CEBF;
+  --ring: #1F64AF;
+  --radius: 0.75rem;
 }
 
 .dark {
-  --background: #1C1917;
-  --foreground: #EAE6DF;
-  --card: #292524;
-  --card-foreground: #EAE6DF;
-  --popover: #292524;
-  --popover-foreground: #EAE6DF;
-  --primary: #D8CFC8;
-  --primary-foreground: #292524;
-  --secondary: #463D38;
-  --secondary-foreground: #EAE6DF;
-  --muted: #403833;
-  --muted-foreground: #C2B7AE;
-  --accent: #D87D65;
-  --accent-foreground: #FFFFFF;
+  --background: #141312;
+  --foreground: #F2ECE6;
+  --card: #1E1C1A;
+  --card-foreground: #F2ECE6;
+  --popover: #1E1C1A;
+  --popover-foreground: #F2ECE6;
+  --primary: #EAE3DC;
+  --primary-foreground: #141312;
+  --secondary: #2A2522;
+  --secondary-foreground: #F2ECE6;
+  --muted: #24201D;
+  --muted-foreground: #B5ACA3;
+  --accent: #E5A116;
+  --accent-foreground: #141312;
   --destructive: #EF4444;
   --destructive-foreground: #FFFFFF;
-  --border: #665A52;
-  --input: #75675D;
-  --ring: #D8CFC8;
+  --border: #3D3631;
+  --input: #4A423C;
+  --ring: #3882D3;
 }
 
 * {

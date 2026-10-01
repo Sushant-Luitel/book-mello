@@ -53,31 +53,43 @@ export function BookCard({ book }: BookCardProps) {
       </Link>
       
       <div className="flex flex-col flex-grow gap-1">
-        <div className="flex items-center gap-1 text-xs text-muted-foreground mb-1">
-          <Star className="h-3 w-3 fill-accent text-accent" />
-          <span>{book.rating.toFixed(1)}</span>
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1 flex-wrap">
+          {book.rating > 0 ? (
+            <>
+              <Star className="h-3 w-3 fill-[#E5A116] text-[#E5A116]" />
+              <span className="font-medium text-foreground">{book.rating.toFixed(1)}</span>
+            </>
+          ) : (
+            <span className="text-[10px] font-semibold tracking-wide uppercase text-[#1F64AF] dark:text-blue-400 bg-[#1F64AF]/10 px-1.5 py-0.5 rounded-sm">
+              Featured
+            </span>
+          )}
           {book.category && (
             <>
-              <span className="mx-1">•</span>
-              <span>{book.category}</span>
+              <span className="text-muted-foreground/60">•</span>
+              <span className="truncate">{book.category}</span>
             </>
           )}
         </div>
         
-        <Link href={`/shop/${book.id}`} className="font-serif font-semibold leading-tight line-clamp-2 hover:text-accent transition-colors">
+        <Link href={`/shop/${book.id}`} className="font-serif font-semibold leading-snug line-clamp-2 hover:text-[#1F64AF] transition-colors">
           {book.title}
         </Link>
-        <p className="text-sm text-muted-foreground">{book.author}</p>
+        <p className="text-xs sm:text-sm text-muted-foreground line-clamp-1">{book.author}</p>
         
-        <div className="mt-auto pt-2 flex items-center justify-between">
+        <div className="mt-auto pt-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            {book.discountedPrice ? (
-              <>
-                <span className="font-semibold text-lg">{formatNpr(book.discountedPrice)}</span>
-                <span className="text-sm text-muted-foreground line-through">{formatNpr(book.price)}</span>
-              </>
+            {book.price > 0 ? (
+              book.discountedPrice ? (
+                <>
+                  <span className="font-bold text-base sm:text-lg text-foreground">{formatNpr(book.discountedPrice)}</span>
+                  <span className="text-xs text-muted-foreground line-through">{formatNpr(book.price)}</span>
+                </>
+              ) : (
+                <span className="font-bold text-base sm:text-lg text-foreground">{formatNpr(book.price)}</span>
+              )
             ) : (
-              <span className="font-semibold text-lg">{formatNpr(book.price)}</span>
+              <span className="text-xs sm:text-sm font-semibold text-[#1F64AF] dark:text-blue-400">Available on Order</span>
             )}
           </div>
         </div>
@@ -85,13 +97,13 @@ export function BookCard({ book }: BookCardProps) {
       
       {/* Hover Actions */}
       <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0">
-        <Button size="icon" variant="secondary" className="rounded-full shadow-md bg-white text-primary hover:bg-accent hover:text-white dark:bg-card dark:text-foreground">
+        <Button size="icon" variant="secondary" className="rounded-full shadow-md bg-white text-primary hover:bg-[#E5A116] hover:text-slate-950 dark:bg-card dark:text-foreground">
           <Heart className="h-4 w-4" />
         </Button>
       </div>
       
-      <Button className="w-full mt-2 gap-2" variant="outline" onClick={handleAddToCart}>
-        <ShoppingCart className="h-4 w-4" />
+      <Button className="w-full mt-2.5 gap-2 rounded-full border-border/70 hover:border-[#1F64AF] hover:text-[#1F64AF] font-semibold text-xs sm:text-sm" variant="outline" onClick={handleAddToCart}>
+        <ShoppingCart className="h-3.5 w-3.5" />
         Add to Cart
       </Button>
     </div>
