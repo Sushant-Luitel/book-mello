@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast";
 import { formatNpr } from "@/lib/currency";
 
+import { useCart } from "@/lib/cart-context";
+
 interface BookCardProps {
   book: {
     id: string;
@@ -23,11 +25,20 @@ interface BookCardProps {
 }
 
 export function BookCard({ book }: BookCardProps) {
-  const { addToast } = useToast();
+  const { addToCart, openCart } = useCart();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
-    addToast("success", `"${book.title}" added to cart`);
+    e.stopPropagation();
+    addToCart({
+      id: book.id,
+      title: book.title,
+      author: book.author,
+      price: book.price > 0 ? book.price : 550,
+      discountedPrice: book.discountedPrice,
+      cover: book.cover,
+      category: book.category,
+    }, 1);
   };
 
   return (
@@ -78,20 +89,19 @@ export function BookCard({ book }: BookCardProps) {
         <p className="text-xs sm:text-sm text-muted-foreground line-clamp-1">{book.author}</p>
         
         <div className="mt-auto pt-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {book.price > 0 ? (
-              book.discountedPrice ? (
-                <>
-                  <span className="font-bold text-base sm:text-lg text-foreground">{formatNpr(book.discountedPrice)}</span>
-                  <span className="text-xs text-muted-foreground line-through">{formatNpr(book.price)}</span>
-                </>
-              ) : (
-                <span className="font-bold text-base sm:text-lg text-foreground">{formatNpr(book.price)}</span>
-              )
-            ) : (
-              <span className="text-xs sm:text-sm font-semibold text-[#1F64AF] dark:text-blue-400">Available on Order</span>
+          <div className="flex items-baseline gap-2">
+            <span className="font-extrabold text-base sm:text-lg text-foreground tracking-tight">
+              {formatNpr(book.price)}
+            </span>
+            {book.discountedPrice && (
+              <span className="text-xs text-muted-foreground line-through">
+                {formatNpr(book.discountedPrice)}
+              </span>
             )}
           </div>
+          <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full">
+            In Stock
+          </span>
         </div>
       </div>
       

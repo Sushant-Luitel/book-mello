@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ToastProvider } from "@/components/ui/toast";
+import { CartProvider } from "@/lib/cart-context";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://bookmello.com";
 
@@ -80,7 +81,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ToastProvider>
-            {children}
+            <CartProvider>
+              {children}
+            </CartProvider>
           </ToastProvider>
         </ThemeProvider>
       </body>

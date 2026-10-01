@@ -97,6 +97,26 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+button,
+[role="button"],
+a,
+select,
+summary,
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
+input[type="checkbox"],
+input[type="radio"],
+.cursor-pointer {
+  cursor: pointer;
+}
+
+button:disabled,
+[role="button"][aria-disabled="true"],
+input:disabled {
+  cursor: not-allowed;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

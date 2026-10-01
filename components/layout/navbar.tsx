@@ -11,11 +11,12 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { CartDrawer } from "@/components/layout/cart-drawer";
+import { useCart } from "@/lib/cart-context";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
+  const { isCartOpen, setIsCartOpen, totalCount } = useCart();
   const [searchQuery, setSearchQuery] = useState("");
   const pathname = usePathname();
   const router = useRouter();
@@ -120,11 +121,11 @@ export function Navbar() {
               size="icon" 
               aria-label="Open shopping cart" 
               className="relative h-9 w-9 rounded-full border-border/60 hover:border-accent hover:text-accent transition-colors" 
-              onClick={() => setCartOpen(true)}
+              onClick={() => setIsCartOpen(true)}
             >
               <ShoppingCart className="h-4 w-4" />
               <Badge className="absolute -top-1.5 -right-1.5 h-4 min-w-4 px-1 flex items-center justify-center p-0 text-[10px] bg-[#E5A116] text-slate-900 font-bold border-none">
-                2
+                {totalCount}
               </Badge>
             </Button>
           </div>
@@ -136,11 +137,11 @@ export function Navbar() {
               size="icon" 
               aria-label="Open shopping cart" 
               className="relative h-9 w-9 rounded-full border-border/60" 
-              onClick={() => setCartOpen(true)}
+              onClick={() => setIsCartOpen(true)}
             >
               <ShoppingCart className="h-4 w-4" />
               <Badge className="absolute -top-1.5 -right-1.5 h-4 min-w-4 px-1 flex items-center justify-center p-0 text-[10px] bg-[#E5A116] text-slate-900 font-bold border-none">
-                2
+                {totalCount}
               </Badge>
             </Button>
             <Button
@@ -195,7 +196,7 @@ export function Navbar() {
       )}
 
     </header>
-    <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
+    <CartDrawer open={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </>
   );
 }

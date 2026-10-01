@@ -10,8 +10,12 @@ import { HeroSection } from "@/components/home/hero-section";
 
 export default async function Home() {
   const books = await getBooks();
-  const featuredBooks = books.slice(0, 4);
-  const newArrivals = books.filter(b => b.isNew).concat(books.filter(b => !b.isNew).slice(0, 4));
+  const featuredBooks = books.filter(b => b.isFeatured).length >= 4 
+    ? books.filter(b => b.isFeatured).slice(0, 8) 
+    : books.slice(0, 8);
+  const newArrivals = books.filter(b => b.isNew).length >= 4 
+    ? books.filter(b => b.isNew).slice(0, 8) 
+    : books.slice(4, 12);
   const categories = [...new Set(books.map((book) => book.category).filter(Boolean))] as string[];
 
   return (

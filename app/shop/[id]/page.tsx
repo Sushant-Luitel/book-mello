@@ -3,23 +3,54 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { Star, ShoppingCart, Heart, Share2, Truck, ShieldCheck, ChevronDown, Check } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { Star, ShoppingCart, Heart, Share2, Truck, ShieldCheck, ChevronDown, Check, Zap } from "lucide-react";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { StoreBook } from "@/lib/book-shape";
 import { formatNpr } from "@/lib/currency";
+import { useCart } from "@/lib/cart-context";
 
 export default function BookDetailsPage() {
   const params = useParams();
+  const router = useRouter();
   const bookId = params.id as string;
   const [book, setBook] = useState<StoreBook | null>(null);
+  const { addToCart, openCart } = useCart();
   useEffect(() => { fetch(`/api/v1/books/${bookId}`).then((response) => response.json()).then((body) => setBook(body.data ?? null)).catch(() => setBook(null)); }, [bookId]);
   
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("description");
+
+  const handleAddToCart = () => {
+    if (!book) return;
+    addToCart({
+      id: book.id,
+      title: book.title,
+      author: book.author,
+      price: book.price > 0 ? book.price : 550,
+      discountedPrice: book.discountedPrice,
+      cover: book.cover,
+      category: book.category,
+    }, quantity);
+    openCart();
+  };
+
+  const handleBuyNow = () => {
+    if (!book) return;
+    addToCart({
+      id: book.id,
+      title: book.title,
+      author: book.author,
+      price: book.price > 0 ? book.price : 550,
+      discountedPrice: book.discountedPrice,
+      cover: book.cover,
+      category: book.category,
+    }, quantity);
+    router.push("/checkout");
+  };
 
   if (!book) return <main className="min-h-screen flex items-center justify-center">Loading book…</main>;
 
@@ -107,27 +138,39 @@ export default function BookDetailsPage() {
                   <span className={`font-medium ${book.stock ? "text-green-700 dark:text-green-300" : "text-red-700 dark:text-red-300"}`}>{book.stock ? "In Stock" : "Out of Stock"}</span>
                 </div>
                 
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center border border-input rounded-md">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <div className="flex items-center border border-input rounded-full bg-background h-12 px-2 self-start sm:self-auto">
                     <button 
-                      className="px-3 py-2 text-muted-foreground hover:bg-muted transition-colors disabled:opacity-50"
+                      className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-foreground text-sm font-bold"
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
                       disabled={quantity <= 1}
+                      aria-label="Decrease quantity"
                     >-</button>
-                    <span className="w-12 text-center font-medium">{quantity}</span>
+                    <span className="w-10 text-center font-bold text-sm">{quantity}</span>
                     <button 
-                      className="px-3 py-2 text-muted-foreground hover:bg-muted transition-colors disabled:opacity-50"
+                      className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-foreground text-sm font-bold"
                       onClick={() => setQuantity(Math.min(99, quantity + 1))}
                       disabled={!book.stock || quantity >= 99}
+                      aria-label="Increase quantity"
                     >+</button>
                   </div>
                   
-                  <Button size="lg" className="flex-1 gap-2 text-base" disabled={!book.stock}>
-                    <ShoppingCart className="h-5 w-5" /> Add to Cart
+                  <Button 
+                    size="lg" 
+                    className="flex-1 gap-2 text-sm sm:text-base rounded-full border-2 border-[#1F64AF] bg-white text-[#1F64AF] hover:bg-[#1F64AF] hover:text-white dark:bg-card transition-colors font-bold h-12" 
+                    disabled={!book.stock}
+                    onClick={handleAddToCart}
+                  >
+                    <ShoppingCart className="h-4 w-4" /> Add to Cart
                   </Button>
-                  
-                  <Button size="icon" variant="outline" className="h-11 w-11 shrink-0">
-                    <Heart className="h-5 w-5" />
+
+                  <Button 
+                    size="lg" 
+                    className="flex-1 gap-2 text-sm sm:text-base rounded-full bg-[#E5A116] hover:bg-[#D08F0E] text-slate-950 font-bold shadow-md hover:shadow-lg transition-all h-12" 
+                    disabled={!book.stock}
+                    onClick={handleBuyNow}
+                  >
+                    <Zap className="h-4 w-4 fill-current" /> Buy Now (COD)
                   </Button>
                 </div>
               </div>
