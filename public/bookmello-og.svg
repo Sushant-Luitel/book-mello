@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">BookMello — Discover your next great adventure</title>
+  <desc id="desc">BookMello independent bookstore cover image.</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8fbff"/><stop offset="1" stop-color="#e9f1fa"/></linearGradient></defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1030" cy="70" r="250" fill="#e5a916" opacity=".18"/><circle cx="95" cy="590" r="280" fill="#2e73b5" opacity=".10"/>
+  <g transform="translate(190 165) scale(.9)"><path fill="#e5a916" d="M-96 23a104 104 0 1 1 193 1L5-35a55 55 0 0 0-36-14z"/><path fill="#2e73b5" d="M-55 48 91 9c18 40 5 84-30 108-34 24-71 18-92-12l60-39-37-21zm91 29c17-12 24-31 20-48l-35 20c8 13 10 21 15 28z"/></g>
+  <text x="95" y="390" font-family="Arial, Helvetica, sans-serif" font-size="92" font-weight="700" fill="#2e73b5">Book<tspan fill="#666">Mello</tspan></text>
+  <text x="100" y="465" font-family="Arial, Helvetica, sans-serif" font-size="32" fill="#334155">Discover your next great adventure.</text>
+  <rect x="100" y="510" width="170" height="6" rx="3" fill="#e5a916"/><rect x="282" y="510" width="90" height="6" rx="3" fill="#2e73b5"/>
+</svg>

@@ -18,7 +18,7 @@ export default async function Home() {
       <Navbar />
       <main className="flex-1 flex flex-col">
         {/* Hero Section */}
-        <section className="relative w-full py-12 md:py-24 lg:py-32 xl:py-40 flex items-center bg-secondary overflow-hidden">
+        <section className="relative w-full py-12 md:py-24 lg:py-32 xl:py-40 flex items-center bg-forest dark:bg-forest-dark text-white overflow-hidden">
           <div className="absolute inset-0 z-0 opacity-10 dark:opacity-5">
             <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -34,10 +34,10 @@ export default async function Home() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
               <div className="flex flex-col justify-center space-y-6">
                 <div className="space-y-4">
-                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-serif tracking-tight text-primary dark:text-primary-foreground text-balance">
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-serif tracking-tight text-white text-balance">
                     Discover your next great adventure.
                   </h1>
-                  <p className="max-w-[600px] text-lg text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  <p className="max-w-[600px] text-lg text-white/90 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                     A carefully curated collection of the world's most captivating stories, non-fiction masterpieces, and literary classics.
                   </p>
                 </div>
@@ -48,8 +48,8 @@ export default async function Home() {
                     </Link>
                   </Button>
                   <Button size="lg" variant="outline" className="w-full sm:w-auto text-base" asChild>
-                    <Link href="/about">
-                      Our Story
+                    <Link href="/shop">
+                      Browse Catalog
                     </Link>
                   </Button>
                 </div>

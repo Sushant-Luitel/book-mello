@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Filter, SlidersHorizontal, ChevronDown } from "lucide-react";
+import { Suspense, useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Filter } from "lucide-react";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { BookCard } from "@/components/books/book-card";
@@ -11,16 +12,19 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function ShopPage() {
+export default function ShopPage() { return <Suspense fallback={<div className="min-h-screen bg-muted/20" />}><ShopContent /></Suspense>; }
+
+function ShopContent() {
   const [loading, setLoading] = useState(true);
   const [books, setBooks] = useState<StoreBook[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [pagination, setPagination] = useState({ page: 1, pageSize: 12, total: 0, totalPages: 1 });
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  
-  useEffect(() => { fetch("/api/v1/books").then((response) => response.json()).then((body) => setBooks(body.data ?? [])).catch(() => setBooks([])).finally(() => setLoading(false)); }, []);
-  const categories = [...new Set(books.map((book) => book.category).filter(Boolean))] as string[];
+  const searchParams = useSearchParams(); const router = useRouter(); const pathname = usePathname();
+  const queryString = searchParams.toString();
+  useEffect(() => { const controller = new AbortController(); fetch(`/api/v1/books?${queryString}`, { signal: controller.signal }).then(async (response) => { const body = await response.json(); if (!response.ok) throw new Error(body.error); return body; }).then((body) => { setBooks(body.data ?? []); setCategories(body.facets?.categories ?? []); setPagination(body.pagination); }).catch((error) => { if (error.name !== "AbortError") setBooks([]); }).finally(() => { if (!controller.signal.aborted) setLoading(false); }); return () => controller.abort(); }, [queryString]);
+  function updateFilters(changes: Record<string, string | null>) { const next = new URLSearchParams(searchParams.toString()); Object.entries(changes).forEach(([key, value]) => value ? next.set(key, value) : next.delete(key)); if (!("page" in changes)) next.delete("page"); router.push(`${pathname}?${next.toString()}`); }
   const allBooks = books;
-
-  console.log("Fetched books:", allBooks);
 
   return (
     <>
@@ -31,7 +35,7 @@ export default function ShopPage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold font-serif tracking-tight mb-2">All Books</h1>
-              <p className="text-muted-foreground">Showing {allBooks.length} results</p>
+              <p className="text-muted-foreground">Showing {allBooks.length} of {pagination.total} results</p>
             </div>
             
             <div className="flex items-center gap-2">
@@ -45,12 +49,11 @@ export default function ShopPage() {
               
               <div className="hidden md:flex items-center gap-2">
                 <span className="text-sm font-medium">Sort by:</span>
-                <Select className="w-[180px]">
-                  <option>Relevance</option>
-                  <option>Price: Low to High</option>
-                  <option>Price: High to Low</option>
-                  <option>Newest</option>
-                  <option>Popularity</option>
+                <Select className="w-[180px]" value={searchParams.get("sort") ?? "newest"} onChange={(event) => updateFilters({ sort: event.target.value })}>
+                  <option value="relevance">Relevance</option>
+                  <option value="price_asc">Price: Low to High</option>
+                  <option value="price_desc">Price: High to Low</option>
+                  <option value="newest">Newest</option>
                 </Select>
               </div>
             </div>
@@ -68,7 +71,7 @@ export default function ShopPage() {
                   <div className="space-y-3">
                     {categories.map(category => (
                       <div key={category} className="flex items-center space-x-2">
-                        <Checkbox id={`category-${category}`} />
+                        <Checkbox id={`category-${category}`} checked={searchParams.get("category") === category} onChange={(event) => updateFilters({ category: event.target.checked ? category : null })} />
                         <label
                           htmlFor={`category-${category}`}
                           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
@@ -85,38 +88,25 @@ export default function ShopPage() {
                   <h3 className="font-serif font-semibold text-lg mb-4">Price</h3>
                   <div className="space-y-3">
                     <div className="flex items-center space-x-2">
-                      <Checkbox id="price-1" />
+                      <Checkbox id="price-1" checked={searchParams.get("maxPrice") === "999"} onChange={(event) => updateFilters({ minPrice: null, maxPrice: event.target.checked ? "999" : null })} />
                         <label htmlFor="price-1" className="text-sm font-medium cursor-pointer">Under NPR 1,000</label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <Checkbox id="price-2" />
+                      <Checkbox id="price-2" checked={searchParams.get("minPrice") === "1000" && searchParams.get("maxPrice") === "2500"} onChange={(event) => updateFilters({ minPrice: event.target.checked ? "1000" : null, maxPrice: event.target.checked ? "2500" : null })} />
                         <label htmlFor="price-2" className="text-sm font-medium cursor-pointer">NPR 1,000 - 2,500</label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <Checkbox id="price-3" />
+                      <Checkbox id="price-3" checked={searchParams.get("minPrice") === "2500" && searchParams.get("maxPrice") === "5000"} onChange={(event) => updateFilters({ minPrice: event.target.checked ? "2500" : null, maxPrice: event.target.checked ? "5000" : null })} />
                         <label htmlFor="price-3" className="text-sm font-medium cursor-pointer">NPR 2,500 - 5,000</label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <Checkbox id="price-4" />
+                      <Checkbox id="price-4" checked={searchParams.get("minPrice") === "5001"} onChange={(event) => updateFilters({ minPrice: event.target.checked ? "5001" : null, maxPrice: null })} />
                         <label htmlFor="price-4" className="text-sm font-medium cursor-pointer">Over NPR 5,000</label>
                     </div>
                   </div>
                 </div>
 
-                {/* Format */}
-                <div>
-                  <h3 className="font-serif font-semibold text-lg mb-4">Format</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="format-hc" />
-                      <label htmlFor="format-hc" className="text-sm font-medium cursor-pointer">Hardcover</label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="format-pb" />
-                      <label htmlFor="format-pb" className="text-sm font-medium cursor-pointer">Paperback</label>
-                    </div>
-                  </div>
-                </div>
+                <div><h3 className="font-serif font-semibold text-lg mb-4">Availability</h3><div className="flex items-center space-x-2"><Checkbox id="available" checked={searchParams.get("available") === "true"} onChange={(event) => updateFilters({ available: event.target.checked ? "true" : null })} /><label htmlFor="available" className="text-sm font-medium cursor-pointer">In stock only</label></div></div>
               </div>
             </aside>
 
@@ -146,11 +136,8 @@ export default function ShopPage() {
                 )}
               </div>
               
-              {!loading && (
-                <div className="mt-12 flex justify-center">
-                  <Button variant="outline" className="w-full md:w-auto">Load More Books</Button>
-                </div>
-              )}
+              {!loading && !allBooks.length && <p className="py-16 text-center text-muted-foreground">No books match these filters.</p>}
+              {!loading && pagination.totalPages > 1 && <div className="mt-12 flex justify-center items-center gap-2"><Button variant="outline" disabled={pagination.page <= 1} onClick={() => updateFilters({ page: String(pagination.page - 1) })}>Previous</Button>{Array.from({ length: pagination.totalPages }, (_, index) => index + 1).slice(Math.max(0, pagination.page - 3), Math.min(pagination.totalPages, pagination.page + 2)).map((page) => <Button key={page} variant={page === pagination.page ? "default" : "outline"} size="icon" onClick={() => updateFilters({ page: String(page) })}>{page}</Button>)}<Button variant="outline" disabled={pagination.page >= pagination.totalPages} onClick={() => updateFilters({ page: String(pagination.page + 1) })}>Next</Button></div>}
             </div>
           </div>
         </div>
