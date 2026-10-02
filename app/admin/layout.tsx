@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
 import { 
   LayoutDashboard, 
   Book, 
@@ -27,7 +28,42 @@ const NAV_ITEMS = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+
+  useEffect(() => {
+    if (pathname === "/admin/login") return;
+
+    const checkAdmin = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        router.push("/admin/login");
+        return;
+      }
+
+      const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+      
+      if (profile?.role !== 'ADMIN') {
+        router.push("/");
+        return;
+      }
+      
+      setIsAuthorized(true);
+    };
+
+    checkAdmin();
+  }, [pathname, router]);
+
+  if (pathname === "/admin/login") {
+    return <>{children}</>;
+  }
+
+  if (!isAuthorized) {
+    return <div className="min-h-screen flex items-center justify-center bg-muted/20 text-muted-foreground">Checking authorization...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-muted/20 flex flex-col md:flex-row">

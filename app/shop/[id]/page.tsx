@@ -23,6 +23,11 @@ export default function BookDetailsPage() {
   
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("description");
+  const [mainImage, setMainImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (book) setMainImage(book.cover);
+  }, [book]);
 
   const handleAddToCart = () => {
     if (!book) return;
@@ -75,23 +80,29 @@ export default function BookDetailsPage() {
           {/* Product Hero */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 mb-16">
             {/* Image Gallery */}
-            <div className="flex flex-col gap-4">
-              <div className="relative aspect-[3/4] w-full max-w-md mx-auto md:max-w-none rounded-xl overflow-hidden shadow-xl bg-muted border border-border/50">
+            <div className="flex flex-col gap-4 items-center md:items-start">
+              <div className="relative aspect-[3/4] w-full max-w-xs sm:max-w-sm lg:max-w-sm mx-auto md:mx-0 rounded-xl overflow-hidden shadow-xl bg-muted border border-border/50">
                 <Image
-                  src={book.cover}
+                  src={mainImage || book.cover}
                   alt={book.title}
                   fill
                   className="object-cover"
                   priority
                 />
               </div>
-              <div className="flex gap-4 justify-center md:justify-start">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className={`relative w-20 h-28 rounded-md overflow-hidden border-2 cursor-pointer ${i === 1 ? 'border-primary' : 'border-transparent opacity-60 hover:opacity-100'}`}>
-                    <Image src={book.cover} alt="Thumbnail" fill className="object-cover" />
-                  </div>
-                ))}
-              </div>
+              {book.images && book.images.length > 1 && (
+                <div className="flex gap-4 justify-center md:justify-start">
+                  {book.images.map((img, i) => (
+                    <div 
+                      key={i} 
+                      onClick={() => setMainImage(img)}
+                      className={`relative w-20 h-28 rounded-md overflow-hidden border-2 cursor-pointer transition-all ${mainImage === img ? 'border-primary scale-105' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                    >
+                      <Image src={img} alt={`${book.title} view ${i + 1}`} fill className="object-cover" />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Product Info */}

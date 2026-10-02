@@ -12,15 +12,46 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { CartDrawer } from "@/components/layout/cart-drawer";
 import { useCart } from "@/lib/cart-context";
+import { createClient } from "@/lib/supabase/client";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isCartOpen, setIsCartOpen, totalCount } = useCart();
   const [searchQuery, setSearchQuery] = useState("");
+  const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
   const pathname = usePathname();
   const router = useRouter();
   const { theme, setTheme } = useTheme();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session?.user) {
+        setUser(session.user);
+        const { data } = await supabase.from('profiles').select('full_name').eq('id', session.user.id).single();
+        setProfile(data);
+      }
+      
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+        if (session?.user) {
+          setUser(session.user);
+          const { data } = await supabase.from('profiles').select('full_name, avatar_url').eq('id', session.user.id).single();
+          setProfile(data);
+        } else {
+          setUser(null);
+          setProfile(null);
+        }
+      });
+      
+      return () => subscription.unsubscribe();
+    };
+    
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -110,9 +141,15 @@ export function Navbar() {
               <span className="sr-only">Toggle theme</span>
             </Button>
 
-            <Link href="/login">
-              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full" aria-label="Account">
-                <User className="h-4 w-4" />
+            <Link href={user ? "/profile" : "/login"}>
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full overflow-hidden" aria-label="Account">
+                {user ? (
+                  <div className="w-full h-full bg-[#E5A116] text-slate-900 flex items-center justify-center font-serif font-bold text-sm">
+                    {profile?.full_name?.charAt(0).toUpperCase() || <User className="h-4 w-4" />}
+                  </div>
+                ) : (
+                  <User className="h-4 w-4" />
+                )}
               </Button>
             </Link>
 

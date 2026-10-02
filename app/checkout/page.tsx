@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 import { 
   CheckCircle2, 
   Truck, 
@@ -62,32 +63,83 @@ export default function CheckoutPage() {
     placedAt: string;
   } | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data } = await supabase.from('profiles').select('full_name, email, phone, address, city, province').eq('id', user.id).single();
+        if (data) {
+          setFormData((prev) => ({
+            ...prev,
+            fullName: data.full_name || prev.fullName,
+            email: data.email || prev.email,
+            phone: data.phone || prev.phone,
+            address: data.address || prev.address,
+            city: data.city || prev.city,
+            province: data.province || prev.province,
+          }));
+        }
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.fullName.trim() || !formData.phone.trim() || !formData.address.trim()) {
       alert("Please fill in your name, phone number, and delivery address.");
       return;
     }
 
+    if (items.length === 0) {
+      alert("Your cart is empty.");
+      return;
+    }
+
     setIsSubmitting(true);
 
-    // Simulate order placement
-    setTimeout(() => {
-      const orderId = `BM-${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`;
-      const order = {
-        orderId,
+    try {
+      const payload = {
+        ...formData,
+        items: items.map(item => ({
+          id: item.book.id,
+          price: item.book.discountedPrice ?? item.book.price,
+          quantity: item.quantity,
+        })),
+        subtotal,
+        shipping,
+        total,
+      };
+
+      const res = await fetch("/api/v1/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        throw new Error(result.error || "Failed to place order.");
+      }
+
+      setCompletedOrder({
+        orderId: result.data.order_number,
         items: [...items],
         subtotal,
         shipping,
         total,
         customer: { ...formData },
-        placedAt: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" }),
-      };
-
-      setCompletedOrder(order);
+        placedAt: new Date(result.data.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" }),
+      });
+      
       clearCart();
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
       setIsSubmitting(false);
-    }, 600);
+    }
   };
 
   // Order Confirmation View

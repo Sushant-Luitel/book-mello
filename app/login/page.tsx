@@ -23,8 +23,19 @@ export default function LoginPage() {
     setError("");
     const supabase = createClient();
     const result = await supabase.auth.signInWithPassword({ email, password });
-    if (result.error) setError(result.error.message);
-    else router.push("/admin");
+    
+    if (result.error) {
+      setError(result.error.message);
+    } else if (result.data.user) {
+      const { data: profile } = await supabase.from('profiles').select('role').eq('id', result.data.user.id).single();
+      if (profile?.role === 'ADMIN') {
+        await supabase.auth.signOut();
+        setError("Administrators must use the dedicated Admin Login portal.");
+      } else {
+        router.push("/");
+      }
+    }
+    
     setIsLoading(false);
   };
 

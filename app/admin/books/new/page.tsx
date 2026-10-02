@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, Upload, Image as ImageIcon, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,17 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 
 export default function NewBookPage() {
+  const [categories, setCategories] = useState<string[]>([]);
+  
+  useEffect(() => {
+    fetch("/api/v1/categories")
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.data) setCategories(data.data);
+      })
+      .catch(console.error);
+  }, []);
+
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       <div className="flex items-center gap-4">
@@ -40,13 +52,10 @@ export default function NewBookPage() {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Category</label>
-                  <Select>
-                    <option>Select a category</option>
-                    <option>Fiction</option>
-                    <option>Non-Fiction</option>
-                    <option>Science Fiction</option>
-                    <option>Mystery</option>
-                  </Select>
+                  <Input list="categories-list" placeholder="E.g. Fiction" />
+                  <datalist id="categories-list">
+                    {categories.map(c => <option key={c} value={c} />)}
+                  </datalist>
                 </div>
               </div>
               

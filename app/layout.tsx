@@ -20,12 +20,22 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "BookMello | Discover Your Next Great Adventure",
+    default: "BookMello | Your Next Read, Delivered Across Nepal",
     template: "%s | BookMello",
   },
-  description: "Shop a carefully curated collection of captivating stories, nonfiction masterpieces, and literary classics at BookMello.",
+  description:
+    "BookMello is Nepal's independent online bookstore. Shop handpicked fiction, personal development, literary classics, and trending paperbacks with Cash on Delivery across all 7 provinces.",
   applicationName: "BookMello",
-  keywords: ["online bookstore", "buy books", "fiction books", "nonfiction books", "BookMello"],
+  keywords: [
+    "online bookstore Nepal",
+    "buy books Nepal",
+    "cash on delivery books",
+    "fiction books Nepal",
+    "BookMello",
+    "bookmello",
+    "Nepali bookstore",
+    "books delivered Nepal",
+  ],
   authors: [{ name: "BookMello" }],
   creator: "BookMello",
   publisher: "BookMello",
@@ -38,15 +48,24 @@ export const metadata: Metadata = {
     type: "website",
     url: siteUrl,
     siteName: "BookMello",
-    title: "BookMello | Discover Your Next Great Adventure",
-    description: "A carefully curated collection of captivating stories, nonfiction masterpieces, and literary classics.",
-    images: [{ url: "/bookmello-og.png", width: 1200, height: 630, alt: "BookMello independent bookstore" }],
+    title: "BookMello | Connecting Pages With People",
+    description:
+      "Nepal's independent online bookstore. Handpicked books with Cash on Delivery across all 7 provinces. Order now at BookMello!",
+    images: [
+      {
+        url: "/bookmello-og.jpg",
+        width: 1200,
+        height: 628,
+        alt: "BookMello – Connecting Pages With People, Your Next Read Delivered Across Nepal",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "BookMello | Discover Your Next Great Adventure",
-    description: "Shop captivating stories, nonfiction masterpieces, and literary classics at BookMello.",
-    images: ["/bookmello-og.png"],
+    title: "BookMello | Connecting Pages With People",
+    description:
+      "Nepal's independent online bookstore. Handpicked books with Cash on Delivery across all 7 provinces.",
+    images: ["/bookmello-og.jpg"],
   },
   robots: { index: true, follow: true, "max-image-preview": "large" },
 };
@@ -57,7 +76,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${playfair.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${inter.variable} ${playfair.variable} h-full antialiased`}
+    >
       <body className="min-h-full flex flex-col font-sans bg-background text-foreground transition-colors duration-300">
         <script
           type="application/ld+json"
@@ -68,9 +91,14 @@ export default function RootLayout({
               name: "BookMello",
               url: siteUrl,
               logo: `${siteUrl}/bookmello-logo.png`,
-              image: `${siteUrl}/bookmello-og.png`,
-              description: "A carefully curated online bookstore for captivating stories and literary classics.",
-              potentialAction: { "@type": "SearchAction", target: `${siteUrl}/shop?search={search_term_string}`, "query-input": "required name=search_term_string" },
+              image: `${siteUrl}/bookmello-og.jpg`,
+              description:
+                "A carefully curated online bookstore for captivating stories and literary classics.",
+              potentialAction: {
+                "@type": "SearchAction",
+                target: `${siteUrl}/shop?search={search_term_string}`,
+                "query-input": "required name=search_term_string",
+              },
             }),
           }}
         />
@@ -81,9 +109,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ToastProvider>
-            <CartProvider>
-              {children}
-            </CartProvider>
+            <CartProvider>{children}</CartProvider>
           </ToastProvider>
         </ThemeProvider>
       </body>

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast";
 import { formatNpr } from "@/lib/currency";
-
+import { useState, useEffect } from "react";
 import { useCart } from "@/lib/cart-context";
 
 interface BookCardProps {
@@ -41,9 +41,48 @@ export function BookCard({ book }: BookCardProps) {
     }, 1);
   };
 
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isUpdatingBookmark, setIsUpdatingBookmark] = useState(false);
+  const { addToast } = useToast();
+
+  const toggleBookmark = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (isUpdatingBookmark) return;
+    setIsUpdatingBookmark(true);
+    
+    try {
+      const method = isBookmarked ? "DELETE" : "POST";
+      const url = isBookmarked ? `/api/v1/wishlist?book_id=${book.id}` : `/api/v1/wishlist`;
+      
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: method === "POST" ? JSON.stringify({ book_id: book.id }) : undefined,
+      });
+      
+      if (!res.ok) {
+        if (res.status === 401) {
+          addToast("error", "Please log in to save books to your wishlist.");
+        } else {
+          throw new Error("Failed to update wishlist");
+        }
+        return;
+      }
+      
+      setIsBookmarked(!isBookmarked);
+      addToast("success", `${book.title} has been ${isBookmarked ? "removed from" : "added to"} your wishlist.`);
+    } catch (error) {
+      addToast("error", "Something went wrong. Please try again.");
+    } finally {
+      setIsUpdatingBookmark(false);
+    }
+  };
+
   return (
     <div className="group flex flex-col gap-3 rounded-lg p-3 transition-all hover:bg-muted/50 hover:-translate-y-1 relative bg-card shadow-sm border border-border/50">
-      <Link href={`/shop/${book.id}`} className="relative aspect-[2/3] overflow-hidden rounded-md bg-muted">
+      <Link href={`/shop/${book.id}`} className="relative aspect-[3/4] overflow-hidden rounded-md bg-muted">
         <Image
           src={book.cover}
           alt={book.title}
@@ -107,8 +146,14 @@ export function BookCard({ book }: BookCardProps) {
       
       {/* Hover Actions */}
       <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0">
-        <Button size="icon" variant="secondary" className="rounded-full shadow-md bg-white text-primary hover:bg-[#E5A116] hover:text-slate-950 dark:bg-card dark:text-foreground">
-          <Heart className="h-4 w-4" />
+        <Button 
+          size="icon" 
+          variant="secondary" 
+          onClick={toggleBookmark}
+          disabled={isUpdatingBookmark}
+          className={`rounded-full shadow-md ${isBookmarked ? 'bg-[#E5A116] text-white hover:bg-[#D08F0E]' : 'bg-white text-primary hover:bg-[#E5A116] hover:text-slate-950 dark:bg-card dark:text-foreground'}`}
+        >
+          <Heart className={`h-4 w-4 ${isBookmarked ? 'fill-current' : ''}`} />
         </Button>
       </div>
       
