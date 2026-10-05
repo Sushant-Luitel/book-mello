@@ -6,6 +6,7 @@ import { ProfileForm } from "@/components/profile/profile-form";
 import { User, Package, Heart, LogOut, Mail, Clock, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatNpr } from "@/lib/currency";
+import { toStoreBook } from "@/lib/book-shape";
 
 export const metadata = {
   title: "My Profile - BookMellow",
@@ -25,11 +26,21 @@ export default async function ProfilePage() {
     .eq("id", user.id)
     .single();
 
-  const { data: wishlist } = await supabase
+  const { data: wishlistItems, error: wishlistError } = await supabase
     .from("wishlist_items")
-    .select("..., books(*)")
+    .select("*, books(*)")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
+
+  if (wishlistError) {
+    console.error("Unable to load wishlist", wishlistError);
+    throw new Error(`Unable to load wishlist: ${wishlistError.message}`);
+  }
+
+  const wishlist = (wishlistItems ?? []).map((item: { id: string; books: Record<string, unknown> | null }) => ({
+    id: item.id,
+    book: item.books ? toStoreBook(item.books) : null,
+  }));
 
   const { data: orders } = await supabase
     .from("orders")
@@ -43,7 +54,7 @@ export default async function ProfilePage() {
     await supabase.auth.signOut();
     redirect("/login");
   }
-
+  console.log("wishlist:",wishlist)
   return (
     <>
       <Navbar />
@@ -126,6 +137,7 @@ export default async function ProfilePage() {
                       My Wishlist
                     </h2>
                     <p className="text-muted-foreground mt-1">Books you've saved for later.</p>
+
                   </div>
                 </div>
 
@@ -136,8 +148,8 @@ export default async function ProfilePage() {
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {wishlist.map((item: any) => (
-                      item.books && <BookCard key={item.id} book={item.books} />
+                    {wishlist.map((item) => (
+                      item.book && <BookCard key={item.id} book={item.book} />
                     ))}
                   </div>
                 )}
