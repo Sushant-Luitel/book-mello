@@ -26,17 +26,17 @@ export default function LoginPage() {
     
     if (result.error) {
       setError(result.error.message);
+      setIsLoading(false);
     } else if (result.data.user) {
       const { data: profile } = await supabase.from('profiles').select('role').eq('id', result.data.user.id).single();
       if (profile?.role === 'ADMIN') {
         await supabase.auth.signOut();
         setError("Administrators must use the dedicated Admin Login portal.");
+        setIsLoading(false);
       } else {
         router.push("/");
       }
     }
-    
-    setIsLoading(false);
   };
 
   return (

@@ -110,7 +110,6 @@ export function Navbar() {
           <nav className="hidden md:flex items-center gap-7">
             <Link href="/" className={navClass("/")}>Home</Link>
             <Link href="/shop" className={navClass("/shop")}>Shop All</Link>
-            <Link href="/shop?filter=featured" className="text-sm font-medium hover:text-accent transition-colors">Staff Picks</Link>
             <Link href="/shop?filter=new" className="text-sm font-medium hover:text-accent transition-colors">New Arrivals</Link>
           </nav>
 
@@ -212,7 +211,6 @@ export function Navbar() {
           <nav className="flex flex-col gap-1">
             <Link href="/" className={cn("px-4 py-2.5 rounded-lg hover:bg-muted font-medium transition-colors", pathname === "/" && "bg-muted text-accent")} onClick={() => setMobileMenuOpen(false)}>Home</Link>
             <Link href="/shop" className={cn("px-4 py-2.5 rounded-lg hover:bg-muted font-medium transition-colors", pathname === "/shop" && "bg-muted text-accent")} onClick={() => setMobileMenuOpen(false)}>Shop All</Link>
-            <Link href="/shop?filter=featured" className="px-4 py-2.5 rounded-lg hover:bg-muted font-medium transition-colors" onClick={() => setMobileMenuOpen(false)}>Staff Picks</Link>
             <Link href="/shop?filter=new" className="px-4 py-2.5 rounded-lg hover:bg-muted font-medium transition-colors" onClick={() => setMobileMenuOpen(false)}>New Arrivals</Link>
             <div className="h-px bg-border my-2"></div>
             <Link href="/login" className="px-4 py-2.5 rounded-lg hover:bg-muted font-medium flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>

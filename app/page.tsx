@@ -20,10 +20,7 @@ export default async function Home() {
     books.filter((b) => b.isFeatured).length >= 4
       ? books.filter((b) => b.isFeatured).slice(0, 8)
       : books.slice(0, 8);
-  const newArrivals =
-    books.filter((b) => b.isNew).length >= 4
-      ? books.filter((b) => b.isNew).slice(0, 8)
-      : books.slice(4, 12);
+  const newArrivals = books.filter((b) => b.isNew);
   const categories = [
     ...new Set(books.map((book) => book.category).filter(Boolean)),
   ] as string[];
