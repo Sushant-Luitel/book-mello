@@ -43,6 +43,7 @@
 }
 
 :root {
+  color-scheme: light;
   --background: #FAF8F5;
   --foreground: #221D1A;
   --card: #FFFFFF;
@@ -66,6 +67,7 @@
 }
 
 .dark {
+  color-scheme: dark;
   --background: #141312;
   --foreground: #F2ECE6;
   --card: #1E1C1A;
@@ -110,6 +112,11 @@ input[type="checkbox"],
 input[type="radio"],
 .cursor-pointer {
   cursor: pointer;
+}
+
+option {
+  background-color: var(--popover);
+  color: var(--popover-foreground);
 }
 
 button:disabled,
