@@ -54,7 +54,6 @@ export default async function ProfilePage() {
     await supabase.auth.signOut();
     redirect("/login");
   }
-  console.log("wishlist:",wishlist)
   return (
     <>
       <Navbar />
