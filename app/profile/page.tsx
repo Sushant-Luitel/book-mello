@@ -64,7 +64,7 @@ export default async function ProfilePage() {
             {/* Sidebar Profile Card */}
             <div className="lg:col-span-1 space-y-6">
               <div className="bg-white dark:bg-card rounded-3xl p-6 shadow-sm border border-border/50 text-center relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-[#E5A116]/20 to-[#E5A116]/5 z-0" />
+                <div className="absolute top-0 left-0 w-full h-24 bg-linear-to-r from-brand-gold/20 to-brand-gold/5 z-0" />
                 <div className="relative z-10">
                   <div className="w-24 h-24 mx-auto bg-primary text-primary-foreground rounded-full flex items-center justify-center text-3xl font-serif font-bold shadow-md border-4 border-white dark:border-card">
                     {profile?.full_name?.charAt(0).toUpperCase() || <User />}
@@ -90,7 +90,7 @@ export default async function ProfilePage() {
                 <h3 className="font-semibold text-lg mb-4 font-serif">Your Activity</h3>
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-[#E5A116]/10 text-[#E5A116] rounded-xl">
+                    <div className="p-2 bg-brand-gold/10 text-brand-gold rounded-xl">
                       <Heart className="h-5 w-5" />
                     </div>
                     <div>
