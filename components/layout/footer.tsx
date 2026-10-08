@@ -110,10 +110,10 @@ export function Footer() {
           <div>
             <h4 className="font-serif font-bold text-base text-white mb-4">Quick Links</h4>
             <ul className="space-y-2.5 text-sm text-white/70">
-              <li><Link href="/shop" className="hover:text-[#E5A116] transition-colors">Shop All Books</Link></li>
-              <li><Link href="/shop?filter=featured" className="hover:text-[#E5A116] transition-colors">Staff Picks & Bestsellers</Link></li>
-              <li><Link href="/shop?filter=new" className="hover:text-[#E5A116] transition-colors">New Arrivals</Link></li>
-              <li><Link href="/shop" className="hover:text-[#E5A116] transition-colors">Browse Genres</Link></li>
+              <li><Link href="/all" className="hover:text-[#E5A116] transition-colors">Shop All Books</Link></li>
+              <li><Link href="/all?filter=featured" className="hover:text-[#E5A116] transition-colors">Staff Picks & Bestsellers</Link></li>
+              <li><Link href="/all?filter=new" className="hover:text-[#E5A116] transition-colors">New Arrivals</Link></li>
+              <li><Link href="/all" className="hover:text-[#E5A116] transition-colors">Browse Genres</Link></li>
             </ul>
           </div>
 

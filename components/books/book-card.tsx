@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast";
 import { formatNpr } from "@/lib/currency";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useCart } from "@/lib/cart-context";
 
 interface BookCardProps {
@@ -25,7 +25,7 @@ interface BookCardProps {
 }
 
 export function BookCard({ book }: BookCardProps) {
-  const { addToCart, openCart } = useCart();
+  const { addToCart } = useCart();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -82,7 +82,7 @@ export function BookCard({ book }: BookCardProps) {
 
   return (
     <div className="group flex flex-col gap-3 rounded-lg p-3 transition-all hover:bg-muted/50 hover:-translate-y-1 relative bg-card shadow-sm border border-border/50">
-      <Link href={`/shop/${book.id}`} className="relative aspect-[3/4] overflow-hidden rounded-md bg-muted">
+      <Link href={`/all/${book.id}`} className="relative aspect-3/4 overflow-hidden rounded-md bg-muted">
         <Image
           src={book.cover}
           alt={book.title}
@@ -102,15 +102,15 @@ export function BookCard({ book }: BookCardProps) {
         )}
       </Link>
       
-      <div className="flex flex-col flex-grow gap-1">
+      <div className="flex flex-col grow gap-1">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1 flex-wrap">
           {book.rating > 0 ? (
             <>
-              <Star className="h-3 w-3 fill-[#E5A116] text-[#E5A116]" />
+              <Star className="h-3 w-3 fill-brand-gold text-brand-gold" />
               <span className="font-medium text-foreground">{book.rating.toFixed(1)}</span>
             </>
           ) : (
-            <span className="text-[10px] font-semibold tracking-wide uppercase text-[#1F64AF] dark:text-blue-400 bg-[#1F64AF]/10 px-1.5 py-0.5 rounded-sm">
+            <span className="text-[10px] font-semibold tracking-wide uppercase text-brand-blue dark:text-blue-400 bg-brand-blue/10 px-1.5 py-0.5 rounded-sm">
               Featured
             </span>
           )}
@@ -122,7 +122,7 @@ export function BookCard({ book }: BookCardProps) {
           )}
         </div>
         
-        <Link href={`/shop/${book.id}`} className="font-serif font-semibold leading-snug line-clamp-2 hover:text-[#1F64AF] transition-colors">
+        <Link href={`/all/${book.id}`} className="font-serif font-semibold leading-snug line-clamp-2 truncate hover:text-brand-blue transition-colors">
           {book.title}
         </Link>
         <p className="text-xs sm:text-sm text-muted-foreground line-clamp-1">{book.author}</p>
@@ -151,13 +151,13 @@ export function BookCard({ book }: BookCardProps) {
           variant="secondary" 
           onClick={toggleBookmark}
           disabled={isUpdatingBookmark}
-          className={`rounded-full shadow-md ${isBookmarked ? 'bg-[#E5A116] text-white hover:bg-[#D08F0E]' : 'bg-white text-primary hover:bg-[#E5A116] hover:text-slate-950 dark:bg-card dark:text-foreground'}`}
+          className={`rounded-full shadow-md ${isBookmarked ? 'bg-brand-gold text-white hover:bg-[#D08F0E]' : 'bg-white text-primary hover:bg-brand-gold hover:text-slate-950 dark:bg-card dark:text-foreground'}`}
         >
           <Heart className={`h-4 w-4 ${isBookmarked ? 'fill-current' : ''}`} />
         </Button>
       </div>
       
-      <Button className="w-full mt-2.5 gap-2 rounded-full border-border/70 hover:border-[#1F64AF] hover:text-[#1F64AF] font-semibold text-xs sm:text-sm" variant="outline" onClick={handleAddToCart}>
+      <Button className="w-full mt-2.5 gap-2 rounded-full border-border/70 hover:border-brand-blue hover:text-brand-blue font-semibold text-xs sm:text-sm" variant="outline" onClick={handleAddToCart}>
         <ShoppingCart className="h-3.5 w-3.5" />
         Add to Cart
       </Button>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import {
   ArrowRight,
   Truck,
@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const staggerContainer: any = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
@@ -22,7 +22,7 @@ const staggerContainer: any = {
   },
 };
 
-const fadeInUp: any = {
+const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
   show: {
     opacity: 1,
@@ -33,23 +33,23 @@ const fadeInUp: any = {
 
 export function HeroSection() {
   return (
-    <section className="relative w-full overflow-hidden bg-gradient-to-br from-[#FAF8F5] via-[#F4EFE6] to-[#FAF8F5] dark:from-[#141312] dark:via-[#1a1f2e] dark:to-[#1c1710] border-b border-border/50 transition-colors">
+    <section className="relative w-full overflow-hidden bg-linear-to-br from-[#FAF8F5] via-[#F4EFE6] to-[#FAF8F5] dark:from-[#141312] dark:via-[#1a1f2e] dark:to-[#1c1710] border-b border-border/50 transition-colors">
       {/* Soft ambient blobs for depth with floating animation */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         <motion.div
           animate={{ y: [0, -20, 0], x: [0, 10, 0] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-20 -left-20 w-80 h-80 rounded-full bg-[#1F64AF]/10 dark:bg-[#1F64AF]/15 blur-3xl"
+          className="absolute -top-20 -left-20 w-80 h-80 rounded-full bg-brand-blue/10 dark:bg-brand-blue/15 blur-3xl"
         />
         <motion.div
           animate={{ y: [0, 20, 0], x: [0, -10, 0] }}
           transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          className="absolute -bottom-16 right-1/3 w-96 h-96 rounded-full bg-[#E5A116]/10 dark:bg-[#E5A116]/10 blur-3xl"
+          className="absolute -bottom-16 right-1/3 w-96 h-96 rounded-full bg-brand-gold/10 dark:bg-brand-gold/10 blur-3xl"
         />
         <motion.div
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute top-1/3 right-0 w-64 h-64 rounded-full bg-[#1F64AF]/8 dark:bg-[#1F64AF]/8 blur-3xl"
+          className="absolute top-1/3 right-0 w-64 h-64 rounded-full bg-brand-blue/8 dark:bg-brand-blue/8 blur-3xl"
         />
       </div>
 
@@ -63,22 +63,22 @@ export function HeroSection() {
             className="lg:col-span-7 flex flex-col justify-center space-y-6 md:space-y-7 max-w-2xl lg:max-w-none"
           >
             {/* Tag / Badge */}
-            <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 self-start px-3.5 py-1.5 rounded-full bg-[#1F64AF]/10 dark:bg-[#1F64AF]/20 border border-[#1F64AF]/25 text-[#1F64AF] dark:text-blue-300 text-xs sm:text-sm font-semibold tracking-wide shadow-xs">
-              <Sparkles className="w-3.5 h-3.5 text-[#E5A116] fill-[#E5A116]" />
+            <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 self-start px-3.5 py-1.5 rounded-full bg-brand-blue/10 dark:bg-brand-blue/20 border border-brand-blue/25 text-brand-blue dark:text-blue-300 text-xs sm:text-sm font-semibold tracking-wide shadow-xs">
+              <Sparkles className="w-3.5 h-3.5 text-brand-gold fill-brand-gold" />
               <span>Nepal&apos;s Independent Online Bookstore</span>
             </motion.div>
 
             {/* Main Headline */}
             <motion.div variants={fadeInUp} className="space-y-4">
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[64px] font-extrabold tracking-tight text-foreground leading-[1.1] text-balance">
-                Connecting <span className="font-serif font-medium italic text-[#1F64AF] dark:text-[#5295DF]">Pages</span> <br className="hidden sm:inline" />
+                Connecting <span className="font-serif font-medium italic text-brand-blue dark:text-[#5295DF]">Pages</span> <br className="hidden sm:inline" />
                 <span className="relative inline-block mt-1">
                   With People
                   <motion.span
                     initial={{ width: 0 }}
                     animate={{ width: "100%" }}
                     transition={{ delay: 1, duration: 0.8, ease: "easeOut" }}
-                    className="absolute bottom-1 left-0 h-3.5 bg-[#E5A116]/30 dark:bg-[#E5A116]/40 -z-10 rounded-sm"
+                    className="absolute bottom-1 left-0 h-3.5 bg-brand-gold/30 dark:bg-brand-gold/40 -z-10 rounded-sm"
                   />
                 </span>
               </h1>
@@ -96,11 +96,11 @@ export function HeroSection() {
             <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-1">
               <Button
                 size="lg"
-                className="h-12 px-8 rounded-full bg-[#E5A116] hover:bg-[#D08F0E] text-slate-950 font-bold shadow-md shadow-[#E5A116]/25 hover:shadow-lg hover:shadow-[#E5A116]/35 transition-all text-base tracking-wide relative overflow-hidden group"
+                className="h-12 px-8 rounded-full bg-brand-gold hover:bg-[#D08F0E] text-slate-950 font-bold shadow-md shadow-brand-gold/25 hover:shadow-lg hover:shadow-brand-gold/35 transition-all text-base tracking-wide relative overflow-hidden group"
                 asChild
               >
                 <Link
-                  href="/shop"
+                  href="/all"
                   className="flex items-center justify-center gap-2"
                 >
                   <span className="relative z-10">ORDER NOW</span>
@@ -115,7 +115,7 @@ export function HeroSection() {
                 className="h-12 px-7 rounded-full border-2 border-foreground/20 hover:border-foreground/40 text-foreground font-semibold hover:bg-foreground/5 transition-all text-base"
                 asChild
               >
-                <Link href="/shop" className="flex items-center justify-center">
+                <Link href="/all" className="flex items-center justify-center">
                   Browse Catalog
                 </Link>
               </Button>
@@ -124,11 +124,11 @@ export function HeroSection() {
             {/* Quick Trust Highlights */}
             <motion.div variants={fadeInUp} className="flex flex-wrap items-center gap-4 sm:gap-6 pt-1 text-xs sm:text-sm text-foreground/80 font-medium">
               <span className="flex items-center gap-1.5">
-                <Truck className="h-4 w-4 text-[#1F64AF]" />
+                <Truck className="h-4 w-4 text-brand-blue" />
                 Delivery to all 7 Provinces
               </span>
               <span className="flex items-center gap-1.5">
-                <ShieldCheck className="h-4 w-4 text-[#E5A116]" />
+                <ShieldCheck className="h-4 w-4 text-brand-gold" />
                 100% Genuine Books
               </span>
               <span className="flex items-center gap-1.5">
@@ -167,7 +167,7 @@ export function HeroSection() {
                 aria-label="BookMello Instagram"
                 className="group inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white dark:bg-card border border-pink-500/35 hover:border-pink-500 shadow-xs hover:shadow-sm text-foreground text-xs sm:text-sm font-semibold transition-all hover:-translate-y-0.5"
               >
-                <div className="w-5 h-5 rounded-md bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] flex items-center justify-center text-white shrink-0">
+                <div className="w-5 h-5 rounded-md bg-linear-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] flex items-center justify-center text-white shrink-0">
                   <svg
                     className="w-3.5 h-3.5 stroke-current fill-none"
                     strokeWidth="2"
@@ -205,21 +205,21 @@ export function HeroSection() {
               initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
               animate={{ opacity: 1, scale: 1, rotate: 0 }}
               transition={{ duration: 0.8, type: "spring", bounce: 0.4, delay: 0.2 }}
-              className="relative w-full max-w-[420px] sm:max-w-[480px]"
+              className="relative w-full max-w-105 sm:max-w-120"
             >
               {/* Decorative Accent Strips */}
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: "7rem" }}
                 transition={{ duration: 0.6, delay: 0.8 }}
-                className="absolute -top-3 -right-2 h-7 bg-[#E5A116] rounded-sm shadow-md transform rotate-12 z-0"
+                className="absolute -top-3 -right-2 h-7 bg-brand-gold rounded-sm shadow-md transform rotate-12 z-0"
                 aria-hidden="true"
               />
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: "8rem" }}
                 transition={{ duration: 0.6, delay: 0.9 }}
-                className="absolute -bottom-3 -left-2 h-6 bg-[#1F64AF] rounded-sm shadow-md transform -rotate-6 z-0"
+                className="absolute -bottom-3 -left-2 h-6 bg-brand-blue rounded-sm shadow-md transform -rotate-6 z-0"
                 aria-hidden="true"
               />
 
@@ -254,7 +254,7 @@ export function HeroSection() {
                     <br />
                     Delivery
                   </span>
-                  <span className="text-[8px] font-semibold text-[#1F64AF]">
+                  <span className="text-[8px] font-semibold text-brand-blue">
                     Pay at Doorstep
                   </span>
                 </div>
