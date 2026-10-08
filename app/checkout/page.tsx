@@ -13,9 +13,7 @@ import {
   MessageCircle, 
   Phone, 
   MapPin, 
-  CreditCard,
   Banknote,
-  Sparkles
 } from "lucide-react";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
@@ -195,7 +193,7 @@ export default function CheckoutPage() {
                   <h4 className="font-bold text-xs uppercase text-muted-foreground tracking-wider mb-1">
                     Payment & Timeframe:
                   </h4>
-                  <p className="font-bold text-base text-[#1F64AF] dark:text-blue-400">
+                  <p className="font-bold text-base text-brand-blue dark:text-blue-400">
                     {formatNpr(completedOrder.total)}
                   </p>
                   <p className="text-xs text-muted-foreground font-medium">
@@ -253,7 +251,7 @@ export default function CheckoutPage() {
                   className="flex-1 rounded-full border-border/80 h-12 font-semibold" 
                   asChild
                 >
-                  <Link href="/shop">
+                  <Link href="/all">
                     Continue Shopping
                   </Link>
                 </Button>
@@ -281,8 +279,8 @@ export default function CheckoutPage() {
             <p className="text-sm text-muted-foreground">
               You haven&apos;t added any books to your cart yet. Explore our curated catalog and discover your next read!
             </p>
-            <Button size="lg" className="rounded-full bg-[#1F64AF] hover:bg-[#154D8A] px-8 font-bold" asChild>
-              <Link href="/shop" className="inline-flex items-center gap-2">
+            <Button size="lg" className="rounded-full bg-brand-blue hover:bg-brand-blue-dark px-8 font-bold" asChild>
+              <Link href="/all" className="inline-flex items-center gap-2">
                 <span>Browse Collection</span>
               </Link>
             </Button>
@@ -302,7 +300,7 @@ export default function CheckoutPage() {
           
           <div className="mb-6 flex items-center justify-between">
             <div>
-              <Link href="/shop" className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#1F64AF] dark:text-blue-400 hover:underline mb-2">
+              <Link href="/all" className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-brand-blue dark:text-blue-400 hover:underline mb-2">
                 <ArrowLeft className="w-4 h-4" /> Back to Shop
               </Link>
               <h1 className="text-2xl sm:text-3xl font-bold font-serif">Checkout</h1>
@@ -320,7 +318,7 @@ export default function CheckoutPage() {
               {/* Contact Information */}
               <div className="bg-card border border-border/70 rounded-2xl p-5 sm:p-7 shadow-xs space-y-4">
                 <div className="flex items-center gap-2 border-b border-border/50 pb-3">
-                  <Phone className="w-4 h-4 text-[#1F64AF]" />
+                  <Phone className="w-4 h-4 text-brand-blue" />
                   <h2 className="font-serif font-bold text-lg">Contact Information</h2>
                 </div>
 
@@ -371,7 +369,7 @@ export default function CheckoutPage() {
               {/* Delivery Address */}
               <div className="bg-card border border-border/70 rounded-2xl p-5 sm:p-7 shadow-xs space-y-4">
                 <div className="flex items-center gap-2 border-b border-border/50 pb-3">
-                  <MapPin className="w-4 h-4 text-[#E5A116]" />
+                  <MapPin className="w-4 h-4 text-brand-gold" />
                   <h2 className="font-serif font-bold text-lg">Delivery Address in Nepal</h2>
                 </div>
 
@@ -382,7 +380,7 @@ export default function CheckoutPage() {
                   <select
                     value={formData.province}
                     onChange={(e) => setFormData({ ...formData, province: e.target.value })}
-                    className="w-full h-11 px-3.5 rounded-xl border border-input bg-background text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#1F64AF]"
+                    className="w-full h-11 px-3.5 rounded-xl border border-input bg-background text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-blue"
                   >
                     {NEPAL_PROVINCES.map(prov => (
                       <option key={prov} value={prov}>{prov}</option>
@@ -409,7 +407,7 @@ export default function CheckoutPage() {
                         type="button"
                         key={c}
                         onClick={() => setFormData({ ...formData, city: c })}
-                        className="text-[11px] px-2.5 py-0.5 rounded-full bg-muted hover:bg-[#1F64AF]/15 hover:text-[#1F64AF] font-medium transition-colors"
+                        className="text-[11px] px-2.5 py-0.5 rounded-full bg-muted hover:bg-brand-blue/15 hover:text-brand-blue font-medium transition-colors"
                       >
                         {c}
                       </button>
@@ -454,14 +452,14 @@ export default function CheckoutPage() {
 
                 <div className="space-y-3">
                   {/* COD Option */}
-                  <label className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-colors cursor-pointer ${formData.paymentMethod === 'cod' ? 'border-[#1F64AF] bg-[#1F64AF]/5' : 'border-border/70 hover:border-border'}`}>
+                  <label className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-colors cursor-pointer ${formData.paymentMethod === 'cod' ? 'border-brand-blue bg-brand-blue/5' : 'border-border/70 hover:border-border'}`}>
                     <input
                       type="radio"
                       name="paymentMethod"
                       value="cod"
                       checked={formData.paymentMethod === "cod"}
                       onChange={() => setFormData({ ...formData, paymentMethod: "cod" })}
-                      className="mt-1 text-[#1F64AF] focus:ring-[#1F64AF]"
+                      className="mt-1 text-brand-blue focus:ring-brand-blue"
                     />
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
@@ -475,14 +473,14 @@ export default function CheckoutPage() {
                   </label>
 
                   {/* Fonepay / QR Option */}
-                  <label className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-colors cursor-pointer ${formData.paymentMethod === 'qr' ? 'border-[#1F64AF] bg-[#1F64AF]/5' : 'border-border/70 hover:border-border'}`}>
+                  <label className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-colors cursor-pointer ${formData.paymentMethod === 'qr' ? 'border-brand-blue bg-brand-blue/5' : 'border-border/70 hover:border-border'}`}>
                     <input
                       type="radio"
                       name="paymentMethod"
                       value="qr"
                       checked={formData.paymentMethod === "qr"}
                       onChange={() => setFormData({ ...formData, paymentMethod: "qr" })}
-                      className="mt-1 text-[#1F64AF] focus:ring-[#1F64AF]"
+                      className="mt-1 text-brand-blue focus:ring-brand-blue"
                     />
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
@@ -549,14 +547,14 @@ export default function CheckoutPage() {
                   </div>
 
                   {subtotal < 2500 && (
-                    <p className="text-[11px] text-[#1F64AF] dark:text-blue-400">
+                    <p className="text-[11px] text-brand-blue dark:text-blue-400">
                       ✨ Add {formatNpr(2500 - subtotal)} more for Free Shipping!
                     </p>
                   )}
 
                   <div className="border-t border-border/70 pt-3 mt-3 flex justify-between font-serif text-lg font-bold">
                     <span>Total Amount</span>
-                    <span className="text-[#1F64AF] dark:text-blue-400">{formatNpr(total)}</span>
+                    <span className="text-brand-blue dark:text-blue-400">{formatNpr(total)}</span>
                   </div>
                 </div>
 
@@ -565,7 +563,7 @@ export default function CheckoutPage() {
                   type="submit"
                   size="lg"
                   disabled={isSubmitting}
-                  className="w-full h-13 rounded-full bg-[#E5A116] hover:bg-[#D08F0E] text-slate-950 font-bold text-base shadow-lg hover:shadow-xl transition-all cursor-pointer"
+                  className="w-full h-13 rounded-full bg-brand-gold hover:bg-[#D08F0E] text-slate-950 font-bold text-base shadow-lg hover:shadow-xl transition-all cursor-pointer"
                 >
                   {isSubmitting ? "Placing Order..." : `Place Order • ${formatNpr(total)}`}
                 </Button>
@@ -577,7 +575,7 @@ export default function CheckoutPage() {
                     <span>Guaranteed genuine editions with easy returns</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Truck className="w-4 h-4 text-[#1F64AF] shrink-0" />
+                    <Truck className="w-4 h-4 text-brand-blue shrink-0" />
                     <span>Courier dispatch with SMS & WhatsApp updates</span>
                   </div>
                 </div>

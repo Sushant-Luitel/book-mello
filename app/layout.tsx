@@ -96,7 +96,7 @@ export default function RootLayout({
                 "A carefully curated online bookstore for captivating stories and literary classics.",
               potentialAction: {
                 "@type": "SearchAction",
-                target: `${siteUrl}/shop?search={search_term_string}`,
+                target: `${siteUrl}/all?search={search_term_string}`,
                 "query-input": "required name=search_term_string",
               },
             }),

@@ -145,3 +145,44 @@ input:disabled {
   from { transform: scaleX(1); }
   to { transform: scaleX(0); }
 }
+.embla {
+  overflow: hidden;
+  width: 100%;
+}
+
+.embla__container {
+  display: flex;
+  margin-left: -16px; 
+}
+
+.embla__slide {
+  flex: 0 0 80%; 
+  min-width: 0;
+  padding-left: 16px; 
+}
+
+@media (min-width: 768px) {
+  .embla__slide {
+    flex: 0 0 33.333333%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .embla__slide {
+    flex: 0 0 25%;
+  }
+}
+
+.book-card {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.book-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+}
