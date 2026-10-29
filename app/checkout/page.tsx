@@ -133,8 +133,8 @@ export default function CheckoutPage() {
       });
       
       clearCart();
-    } catch (error: any) {
-      alert(error.message);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "An unexpected error occurred");
     } finally {
       setIsSubmitting(false);
     }

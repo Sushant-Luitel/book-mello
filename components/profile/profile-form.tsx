@@ -7,7 +7,18 @@ import { useToast } from "@/components/ui/toast";
 import { Save, MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export function ProfileForm({ profile }: { profile: any }) {
+export type UserProfile = {
+  full_name?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  city?: string | null;
+  province?: string | null;
+  email?: string | null;
+  role?: string | null;
+  avatar_url?: string | null;
+} | null;
+
+export function ProfileForm({ profile }: { profile: UserProfile }) {
   const [isLoading, setIsLoading] = useState(false);
   const { addToast } = useToast();
   const router = useRouter();
@@ -41,7 +52,7 @@ export function ProfileForm({ profile }: { profile: any }) {
 
       addToast("success", "Profile & delivery address updated successfully!");
       router.refresh();
-    } catch (error) {
+    } catch {
       addToast("error", "Failed to update profile. Please try again.");
     } finally {
       setIsLoading(false);
