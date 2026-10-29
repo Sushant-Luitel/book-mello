@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Eye, EyeOff, BookOpen, KeySquare } from "lucide-react";
+import { Eye, EyeOff, BookOpen, KeySquare} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -28,6 +28,41 @@ export default function LoginPage() {
     });
     if (error) {
       setError(error.message);
+      setIsLoading(false);
+    }
+  };
+  const handlePasskeyLogin = async () => {
+    setIsLoading(true);
+    setError("");
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.signInWithPasskey();
+      if (error) {
+        setError(error.message);
+        setIsLoading(false);
+        return;
+      }
+      if (data?.user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role, full_name")
+          .eq("id", data.user.id)
+          .single();
+        if (!profile || !profile.full_name) {
+          router.push("/onboarding");
+        } else if (profile.role === "ADMIN") {
+          await supabase.auth.signOut();
+          setError("Administrators must use the dedicated Admin Login portal.");
+        } else {
+          router.push("/");
+          router.refresh();
+        }
+      }
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Failed to authenticate with passkey";
+      setError(message);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -242,6 +277,8 @@ export default function LoginPage() {
               variant="outline"
               className="w-full bg-card hover:bg-muted group"
               type="button"
+              onClick={handlePasskeyLogin}
+              disabled={isLoading}
             >
               <KeySquare className="h-5 w-5 mr-2 text-primary group-hover:text-accent transition-colors" />
               Passkey
