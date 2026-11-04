@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { formatNpr } from "@/lib/currency";
 import { toStoreBook } from "@/lib/book-shape";
 import { PasskeyManager } from "./passkey-manager";
+import { MfaManager } from "./mfa-manager";
 
 export const metadata = {
   title: "My Profile - BookMellow",
@@ -239,6 +240,7 @@ export default async function ProfilePage() {
                 )}
               </section>
               <PasskeyManager />
+              <MfaManager />
             </div>
           </div>
         </div>
