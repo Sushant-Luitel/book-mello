@@ -7,6 +7,9 @@ import { Edit, Plus, Save, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatNpr } from "@/lib/currency";
 import type { StoreBook } from "@/lib/book-shape";
 
@@ -27,7 +30,7 @@ export default function AdminBooksPage() {
 
   useEffect(() => {
     let active = true;
-    fetch("/api/v1/books", { cache: "no-store" }).then(async (response) => { const body = await response.json(); if (!response.ok) throw new Error(body.error ?? "Unable to load books"); return body.data ?? []; }).then((data) => { if (active) { setBooks(data); setLoading(false); } }).catch((error) => { if (active) { setMessage(error instanceof Error ? error.message : "Unable to load books"); setLoading(false); } });
+    fetch("/api/v1/books?pageSize=1000", { cache: "no-store" }).then(async (response) => { const body = await response.json(); if (!response.ok) throw new Error(body.error ?? "Unable to load books"); return body.data ?? []; }).then((data) => { if (active) { setBooks(data); setLoading(false); } }).catch((error) => { if (active) { setMessage(error instanceof Error ? error.message : "Unable to load books"); setLoading(false); } });
     
     fetch("/api/v1/categories")
       .then(res => res.json())
@@ -39,7 +42,18 @@ export default function AdminBooksPage() {
     return () => { active = false; };
   }, []);
 
-  const visibleBooks = useMemo(() => books.filter((book) => `${book.title} ${book.author} ${book.category ?? ""}`.toLowerCase().includes(searchTerm.toLowerCase())), [books, searchTerm]);
+  const filteredBooks = useMemo(() => books.filter((book) => `${book.title} ${book.author} ${book.category ?? ""}`.toLowerCase().includes(searchTerm.toLowerCase())), [books, searchTerm]);
+  
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const totalPages = Math.max(1, Math.ceil(filteredBooks.length / itemsPerPage));
+  
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+  
+  const paginatedBooks = useMemo(() => filteredBooks.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage), [filteredBooks, currentPage]);
+
   const startEdit = (book: AdminBook) => { setEditingId(book.id); setMessage(""); setDraft({ title: book.title, author: book.author, description: book.description ?? "", price: String(book.price), stock: book.stock, image_url: book.image_url ?? "", category: book.category ?? "" }); };
   const closeEdit = () => { setEditingId(null); setDraft(emptyDraft); };
   const updateDraft = <K extends keyof Draft>(key: K, value: Draft[K]) => setDraft((current) => ({ ...current, [key]: value }));
@@ -55,13 +69,35 @@ export default function AdminBooksPage() {
   return <div className="space-y-6">
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"><div><h1 className="text-3xl font-bold font-serif mb-1">Books</h1><p className="text-muted-foreground text-sm">Manage the live Supabase catalog.</p></div><Button asChild><Link href="/admin/books/new"><Plus className="h-4 w-4 mr-2" /> Add New Book</Link></Button></div>
     {message && <p className="rounded-md bg-muted px-3 py-2 text-sm">{message}</p>}
-    <div className="bg-card rounded-lg border border-border shadow-sm overflow-hidden"><div className="p-4 border-b border-border"><div className="relative w-full sm:w-72"><Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /><Input placeholder="Search books..." className="pl-9 bg-background" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} /></div></div>
-      <div className="overflow-x-auto"><table className="w-full text-sm text-left"><thead className="text-xs text-muted-foreground uppercase bg-muted/50"><tr><th className="px-6 py-4">Book</th><th className="px-6 py-4">Category</th><th className="px-6 py-4">Price</th><th className="px-6 py-4">Availability</th><th className="px-6 py-4 text-right">Actions</th></tr></thead><tbody className="divide-y divide-border">{loading ? <tr><td colSpan={5} className="px-6 py-12 text-center text-muted-foreground">Loading books...</td></tr> : visibleBooks.map((book) => 
+    <Card>
+      <CardHeader className="p-4 border-b">
+        <div className="relative w-full sm:w-72">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input placeholder="Search books..." className="pl-9" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
+        </div>
+      </CardHeader>
+      <CardContent className="p-0">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Book</TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead>Price</TableHead>
+              <TableHead>Availability</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {loading ? <TableRow><TableCell colSpan={5} className="py-12 text-center text-muted-foreground">Loading books...</TableCell></TableRow> : paginatedBooks.map((book) => 
         editingId === book.id ? (
-          <tr key={book.id} className="bg-muted/30">
-            <td className="px-4 py-3" colSpan={5}>
-              <div className="bg-card p-4 rounded-lg border border-border shadow-sm flex flex-col space-y-4">
-                <div className="flex justify-between items-center font-serif font-bold text-lg">Edit Book <Button variant="ghost" size="icon" onClick={closeEdit}><X className="h-4 w-4"/></Button></div>
+          <TableRow key={book.id} className="bg-muted/30">
+            <TableCell colSpan={5}>
+              <Card className="shadow-sm">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="font-serif text-lg">Edit Book</CardTitle>
+                  <Button variant="ghost" size="icon" onClick={closeEdit}><X className="h-4 w-4"/></Button>
+                </CardHeader>
+                <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1"><label className="text-xs font-semibold">Title</label><Input value={draft.title} onChange={(e) => updateDraft("title", e.target.value)} /></div>
                   <div className="space-y-1"><label className="text-xs font-semibold">Author</label><Input value={draft.author} onChange={(e) => updateDraft("author", e.target.value)} /></div>
@@ -80,12 +116,54 @@ export default function AdminBooksPage() {
                   <label className="flex items-center gap-2 text-sm font-medium"><input type="checkbox" checked={draft.stock} onChange={(e) => updateDraft("stock", e.target.checked)} /> Available in stock</label>
                   <Button onClick={saveBook} disabled={saving}><Save className="h-4 w-4 mr-2" />{saving ? "Saving..." : "Save"}</Button>
                 </div>
-              </div>
-            </td>
-          </tr>
+                </CardContent>
+              </Card>
+            </TableCell>
+          </TableRow>
         ) : (
-          <tr key={book.id} className="hover:bg-muted/30"><td className="px-6 py-4"><div className="flex items-center gap-3"><div className="relative h-12 w-8 rounded overflow-hidden shrink-0"><Image src={book.cover} alt={book.title} fill className="object-cover" /></div><div><div className="font-medium truncate max-w-[250px]">{book.title}</div><div className="text-muted-foreground text-xs">{book.author}</div></div></div></td><td className="px-6 py-4">{book.category ?? "—"}</td><td className="px-6 py-4 font-medium">{formatNpr(book.price)}</td><td className="px-6 py-4"><Badge variant={book.stock ? "default" : "destructive"}>{book.stock ? "In stock" : "Out of stock"}</Badge></td><td className="px-6 py-4 text-right"><Button variant="ghost" size="sm" onClick={() => startEdit(book)}><Edit className="h-4 w-4 mr-1" />Edit</Button></td></tr>
+          <TableRow key={book.id}>
+            <TableCell><div className="flex items-center gap-3"><div className="relative h-12 w-8 rounded overflow-hidden shrink-0"><Image src={book.cover} alt={book.title} fill className="object-cover" /></div><div><div className="font-medium truncate max-w-[250px]">{book.title}</div><div className="text-muted-foreground text-xs">{book.author}</div></div></div></TableCell>
+            <TableCell>{book.category ?? "—"}</TableCell>
+            <TableCell className="font-medium">{formatNpr(book.price)}</TableCell>
+            <TableCell><Badge variant={book.stock ? "default" : "destructive"}>{book.stock ? "In stock" : "Out of stock"}</Badge></TableCell>
+            <TableCell className="text-right"><Button variant="ghost" size="sm" onClick={() => startEdit(book)}><Edit className="h-4 w-4 mr-1" />Edit</Button></TableCell>
+          </TableRow>
         )
-      )}</tbody></table></div>{!loading && !visibleBooks.length && <p className="p-8 text-center text-muted-foreground">No books found.</p>}</div>
+      )}
+          </TableBody>
+        </Table>
+      </CardContent>
+      
+      {!loading && filteredBooks.length > 0 && (
+        <div className="flex items-center justify-between p-4 border-t border-border">
+          <div className="text-sm text-muted-foreground hidden sm:block">
+            Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, filteredBooks.length)} of {filteredBooks.length} books
+          </div>
+          <Pagination className="mx-0 w-auto">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                />
+              </PaginationItem>
+              <PaginationItem>
+                <div className="text-sm font-medium mx-2">
+                  Page {currentPage} of {totalPages}
+                </div>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext 
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
+      
+      {!loading && !filteredBooks.length && <p className="p-8 text-center text-muted-foreground">No books found.</p>}
+    </Card>
   </div>;
 }

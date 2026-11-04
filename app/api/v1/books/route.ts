@@ -9,7 +9,7 @@ const bookSchema = z.object({ title: z.string().min(1), author: z.string().min(1
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const parsed = z.object({ search: z.string().trim().max(100).optional(), category: z.string().trim().max(100).optional(), minPrice: z.coerce.number().nonnegative().optional(), maxPrice: z.coerce.number().nonnegative().optional(), available: z.enum(["true", "false"]).optional(), sort: z.enum(["relevance", "price_asc", "price_desc", "newest"]).default("newest"), page: z.coerce.number().int().positive().default(1), pageSize: z.coerce.number().int().min(1).max(48).default(12) }).safeParse(Object.fromEntries(url.searchParams));
+  const parsed = z.object({ search: z.string().trim().max(100).optional(), category: z.string().trim().max(100).optional(), minPrice: z.coerce.number().nonnegative().optional(), maxPrice: z.coerce.number().nonnegative().optional(), available: z.enum(["true", "false"]).optional(), sort: z.enum(["relevance", "price_asc", "price_desc", "newest"]).default("newest"), page: z.coerce.number().int().positive().default(1), pageSize: z.coerce.number().int().min(1).max(1000).default(12) }).safeParse(Object.fromEntries(url.searchParams));
   if (!parsed.success) return NextResponse.json({ error: "Invalid filters", details: parsed.error.flatten() }, { status: 400 });
   const filters = parsed.data;
   const supabase = await createClient();

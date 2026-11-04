@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter, Playfair_Display, Geist } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ToastProvider } from "@/components/ui/toast";
 import { CartProvider } from "@/lib/cart-context";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://bookmello.com";
 
@@ -79,7 +82,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${playfair.variable} h-full antialiased`}
+      className={cn("h-full", "antialiased", inter.variable, playfair.variable, "font-sans", geist.variable)}
     >
       <body className="min-h-full flex flex-col font-sans bg-background text-foreground transition-colors duration-300">
         <script

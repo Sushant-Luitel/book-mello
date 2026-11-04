@@ -104,6 +104,7 @@ export default function LoginPage() {
     if (result.error) {
       setError(result.error.message);
       setIsLoading(false);
+      setIsLoading(false);
       return;
     }
 
@@ -144,6 +145,7 @@ export default function LoginPage() {
 
       if (data?.user) {
         await handlePostAuthRedirect(data.user.id);
+        setIsLoading(false);
       } else {
         router.push("/");
         router.refresh();
