@@ -63,19 +63,22 @@
 }
 
 :root {
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
+  color-scheme: light;
+  --background: #FAF8F5;
+  --foreground: #221D1A;
+  --card: #FFFFFF;
+  --card-foreground: #221D1A;
+  --popover: #FFFFFF;
+  --popover-foreground: #221D1A;
+  --primary: #2C2420;
+  --primary-foreground: #FAF8F5;
+  --secondary: #F3ECE3;
+  --secondary-foreground: #221D1A;
+  --muted: #EDE5DC;
+  --muted-foreground: #6B625B;
+  --accent: #E5A116;
+  --accent-foreground: #1E1A17;
+  --destructive: #B74B4B;
   --destructive-foreground: #FFFFFF;
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
@@ -99,21 +102,22 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
+  color-scheme: dark;
+  --background: #141312;
+  --foreground: #F2ECE6;
+  --card: #1E1C1A;
+  --card-foreground: #F2ECE6;
+  --popover: #1E1C1A;
+  --popover-foreground: #F2ECE6;
+  --primary: #EAE3DC;
+  --primary-foreground: #141312;
+  --secondary: #2A2522;
+  --secondary-foreground: #F2ECE6;
+  --muted: #24201D;
+  --muted-foreground: #B5ACA3;
+  --accent: #E5A116;
+  --accent-foreground: #141312;
+  --destructive: #EF4444;
   --destructive-foreground: #FFFFFF;
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
@@ -157,6 +161,11 @@ input[type="radio"],
   cursor: pointer;
 }
 
+option {
+  background-color: var(--popover);
+  color: var(--popover-foreground);
+}
+
 button:disabled,
 [role="button"][aria-disabled="true"],
 input:disabled {
@@ -183,15 +192,60 @@ input:disabled {
   from { transform: scaleX(1); }
   to { transform: scaleX(0); }
 }
+.embla {
+  overflow: hidden;
+  width: 100%;
+}
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
+.embla__container {
+  display: flex;
+  margin-left: -16px; 
+}
+
+.embla__slide {
+  flex: 0 0 80%; 
+  min-width: 0;
+  padding-left: 16px; 
+}
+
+@media (min-width: 768px) {
+  .embla__slide {
+    flex: 0 0 33.333333%;
   }
-  body {
-    @apply bg-background text-foreground;
+}
+
+@media (min-width: 1024px) {
+  .embla__slide {
+    flex: 0 0 25%;
   }
-  html {
-    @apply font-sans;
-  }
+}
+
+.book-card {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.book-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+}.carousel-spotlight{
+  position:absolute;
+  z-index: 0;
+  top:-48%;
+  left:50%;
+  width:135%;
+  height: 70%;
+  clip-path: polygon(43% 0,57% 0,100% 100%,0 100%);
+  filter:blur(12px);
+  pointer-events: none;
+  background:linear-gradient(
+    to bottom,
+    rgba(255,229,164,0.36),
+    rgba(255,220,130,0.12) 72%,
+    transparent
+  )
 }

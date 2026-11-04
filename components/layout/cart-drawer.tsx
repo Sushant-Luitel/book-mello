@@ -43,7 +43,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
             <ShoppingBag className="h-5 w-5 text-[#1F64AF]" />
             <h2 className="text-xl font-bold font-serif">Your Cart</h2>
             <span className="bg-[#E5A116] text-slate-950 text-xs font-bold px-2 py-0.5 rounded-full ml-1">
-              {totalCount} {totalCount === 1 ? "item" : "items"}
+              {items.length} {items.length === 1 ? "item" : "items"}
             </span>
           </div>
           <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full hover:bg-muted" aria-label="Close cart">
@@ -62,7 +62,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                 <p className="text-lg font-bold font-serif">Your cart is empty</p>
                 <p className="text-muted-foreground text-sm mt-1 mb-6">Looks like you haven&apos;t added any books yet.</p>
                 <Button onClick={onClose} className="rounded-full bg-[#1F64AF] hover:bg-[#154D8A]" asChild>
-                  <Link href="/shop">Start Browsing Books</Link>
+                  <Link href="/all">Start Browsing Books</Link>
                 </Button>
               </div>
             </div>
@@ -72,12 +72,12 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
               const displayPrice = bookPrice > 0 ? bookPrice : 550;
               return (
                 <div key={item.book.id} className="flex gap-4 group bg-card p-3 rounded-xl border border-border/60 relative shadow-xs">
-                  <Link href={`/shop/${item.book.id}`} className="relative h-24 w-18 shrink-0 rounded-md overflow-hidden bg-muted" onClick={onClose}>
+                  <Link href={`/all/${item.book.id}`} className="relative h-24 w-18 shrink-0 rounded-md overflow-hidden bg-muted" onClick={onClose}>
                     <Image src={item.book.cover} alt={item.book.title} fill className="object-cover" />
                   </Link>
                   
                   <div className="flex flex-col flex-1 min-w-0 pr-6">
-                    <Link href={`/shop/${item.book.id}`} className="font-serif font-bold text-sm leading-snug line-clamp-1 hover:text-[#1F64AF] transition-colors" onClick={onClose}>
+                    <Link href={`/all/${item.book.id}`} className="font-serif font-bold text-sm leading-snug line-clamp-1 hover:text-[#1F64AF] transition-colors" onClick={onClose}>
                       {item.book.title}
                     </Link>
                     <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{item.book.author}</p>
@@ -150,7 +150,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
             
             <div className="grid grid-cols-2 gap-3 pt-2">
               <Button variant="outline" onClick={onClose} className="rounded-full" asChild>
-                <Link href="/shop">Continue Browsing</Link>
+                <Link href="/all">Continue Browsing</Link>
               </Button>
               <Button className="rounded-full bg-[#E5A116] hover:bg-[#D08F0E] text-slate-950 font-bold shadow-md hover:shadow-lg" asChild>
                 <Link href="/checkout" onClick={onClose} className="flex items-center justify-center gap-1.5">

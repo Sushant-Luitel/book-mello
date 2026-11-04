@@ -68,9 +68,9 @@ export default function BookDetailsPage() {
           <div className="container mx-auto px-4 md:px-6 py-3 flex items-center text-sm text-muted-foreground">
             <Link href="/" className="hover:text-primary transition-colors">Home</Link>
             <span className="mx-2">/</span>
-            <Link href="/shop" className="hover:text-primary transition-colors">Shop</Link>
+            <Link href="/all" className="hover:text-primary transition-colors">All</Link>
             <span className="mx-2">/</span>
-            <Link href={`/shop?category=${book.category}`} className="hover:text-primary transition-colors">{book.category}</Link>
+            <Link href={`/all?category=${book.category}`} className="hover:text-primary transition-colors">{book.category}</Link>
             <span className="mx-2">/</span>
             <span className="text-foreground font-medium truncate">{book.title}</span>
           </div>

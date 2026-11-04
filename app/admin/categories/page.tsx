@@ -27,9 +27,9 @@ export default function AdminCategoriesPage() {
             const books = bookData.data ?? [];
             const stats = (data.data ?? []).map((cat: string) => ({
               name: cat,
-              count: books.filter((b: any) => b.category === cat).length,
+              count: books.filter((b: { category?: string }) => b.category === cat).length,
             }));
-            setCategories(stats.sort((a: any, b: any) => b.count - a.count));
+            setCategories(stats.sort((a: { count: number }, b: { count: number }) => b.count - a.count));
             setLoading(false);
           });
       })
@@ -61,8 +61,8 @@ export default function AdminCategoriesPage() {
       setSuccess(`Category "${newCategory}" added successfully!`);
       setNewCategory("");
       loadCategories(); // refresh the list
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to add category");
     } finally {
       setIsSubmitting(false);
     }

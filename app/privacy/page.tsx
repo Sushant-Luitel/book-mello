@@ -14,13 +14,13 @@ export default function PrivacyPage() {
       <Navbar />
       <main className="flex-1 min-h-screen bg-muted/20 py-10 sm:py-16">
         <div className="container px-4 sm:px-6 lg:px-8 mx-auto max-w-4xl">
-          <Link href="/" className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1F64AF] dark:text-blue-400 hover:underline mb-6">
+          <Link href="/" className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-blue dark:text-blue-400 hover:underline mb-6">
             <ArrowLeft className="w-4 h-4" /> Back to Home
           </Link>
           
           <div className="bg-card border border-border/70 rounded-3xl p-6 sm:p-12 shadow-sm space-y-6">
             <div className="flex items-center gap-3 border-b border-border/60 pb-5">
-              <div className="w-12 h-12 rounded-full bg-[#1F64AF]/10 flex items-center justify-center text-[#1F64AF]">
+              <div className="w-12 h-12 rounded-full bg-brand-blue/10 flex items-center justify-center text-brand-blue">
                 <Shield className="w-6 h-6" />
               </div>
               <div>
@@ -52,7 +52,7 @@ export default function PrivacyPage() {
 
               <h2 className="text-lg font-bold font-serif text-foreground pt-3">4. Contact Us</h2>
               <p>
-                If you have questions regarding your data or privacy, contact our support team at <a href="mailto:support@bookmello.com" className="text-[#1F64AF] underline">support@bookmello.com</a> or via WhatsApp at <a href="https://wa.me/9779717028478" className="text-[#1F64AF] underline">+977 9717028478</a>.
+                If you have questions regarding your data or privacy, contact our support team at <a href="mailto:support@bookmello.com" className="text-brand-blue underline">support@bookmello.com</a> or via WhatsApp at <a href="https://wa.me/9779717028478" className="text-brand-blue underline">+977 9717028478</a>.
               </p>
             </div>
           </div>
