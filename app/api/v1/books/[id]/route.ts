@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { toStoreBook } from "@/lib/book-shape";
+import { attachRatings } from "@/lib/services/ratings";
 import { z } from "zod";
 import { requireAdmin, authErrorResponse } from "@/lib/auth";
 import { parseBody } from "@/lib/api";
@@ -13,7 +14,8 @@ export async function GET(_request: Request, context: { params: Promise<{ id: st
   const { data, error } = await supabase.from("books").select("*").eq("id", id).maybeSingle();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (!data) return NextResponse.json({ error: "Book not found" }, { status: 404 });
-  return NextResponse.json({ data: toStoreBook(data as Record<string, unknown>) });
+  const [book] = await attachRatings(supabase, [toStoreBook(data as Record<string, unknown>)]);
+  return NextResponse.json({ data: book });
 }
 
 export async function PATCH(request: Request, context: { params: Promise<{ id: string }> }) {

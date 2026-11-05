@@ -5,10 +5,9 @@ import Image from "next/image";
 import { Star, ShoppingCart, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useToast } from "@/components/ui/toast";
 import { formatNpr } from "@/lib/currency";
-import { useState } from "react";
 import { useCart } from "@/lib/cart-context";
+import { useWishlist } from "@/lib/wishlist-context";
 
 interface BookCardProps {
   book: {
@@ -18,6 +17,7 @@ interface BookCardProps {
     price: number;
     discountedPrice?: number;
     rating: number;
+    reviews?: number;
     cover: string;
     isNew?: boolean;
     category?: string;
@@ -41,43 +41,13 @@ export function BookCard({ book }: BookCardProps) {
     }, 1);
   };
 
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const [isUpdatingBookmark, setIsUpdatingBookmark] = useState(false);
-  const { addToast } = useToast();
+  const { has, toggle } = useWishlist();
+  const isBookmarked = has(book.id);
 
-  const toggleBookmark = async (e: React.MouseEvent) => {
+  const toggleBookmark = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
-    if (isUpdatingBookmark) return;
-    setIsUpdatingBookmark(true);
-    
-    try {
-      const method = isBookmarked ? "DELETE" : "POST";
-      const url = isBookmarked ? `/api/v1/wishlist?book_id=${book.id}` : `/api/v1/wishlist`;
-      
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: method === "POST" ? JSON.stringify({ book_id: book.id }) : undefined,
-      });
-      
-      if (!res.ok) {
-        if (res.status === 401) {
-          addToast("error", "Please log in to save books to your wishlist.");
-        } else {
-          throw new Error("Failed to update wishlist");
-        }
-        return;
-      }
-      
-      setIsBookmarked(!isBookmarked);
-      addToast("success", `${book.title} has been ${isBookmarked ? "removed from" : "added to"} your wishlist.`);
-    } catch (error) {
-      addToast("error", "Something went wrong. Please try again.");
-    } finally {
-      setIsUpdatingBookmark(false);
-    }
+    void toggle({ id: book.id, title: book.title });
   };
 
   return (
@@ -108,10 +78,11 @@ export function BookCard({ book }: BookCardProps) {
             <>
               <Star className="h-3 w-3 fill-brand-gold text-brand-gold" />
               <span className="font-medium text-foreground">{book.rating.toFixed(1)}</span>
+              {book.reviews ? <span className="text-muted-foreground/80">({book.reviews})</span> : null}
             </>
           ) : (
-            <span className="text-[10px] font-semibold tracking-wide uppercase text-brand-blue dark:text-blue-400 bg-brand-blue/10 px-1.5 py-0.5 rounded-sm">
-              Featured
+            <span className="text-[10px] font-semibold tracking-wide uppercase text-muted-foreground bg-muted px-1.5 py-0.5 rounded-sm">
+              No reviews yet
             </span>
           )}
           {book.category && (
@@ -144,19 +115,20 @@ export function BookCard({ book }: BookCardProps) {
         </div>
       </div>
       
-      {/* Hover Actions */}
-      <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0">
-        <Button 
-          size="icon" 
-          variant="secondary" 
+      {/* Wishlist: always visible on touch screens and when saved; revealed on hover on desktop */}
+      <div className={`absolute top-4 right-4 flex flex-col gap-2 transition-all ${isBookmarked ? "opacity-100" : "opacity-100 md:opacity-0 md:translate-x-2 md:group-hover:opacity-100 md:group-hover:translate-x-0 md:focus-within:opacity-100"}`}>
+        <Button
+          size="icon"
+          variant="secondary"
           onClick={toggleBookmark}
-          disabled={isUpdatingBookmark}
+          aria-pressed={isBookmarked}
+          aria-label={isBookmarked ? `Remove ${book.title} from wishlist` : `Add ${book.title} to wishlist`}
           className={`rounded-full shadow-md ${isBookmarked ? 'bg-brand-gold text-white hover:bg-[#D08F0E]' : 'bg-white text-primary hover:bg-brand-gold hover:text-slate-950 dark:bg-card dark:text-foreground'}`}
         >
           <Heart className={`h-4 w-4 ${isBookmarked ? 'fill-current' : ''}`} />
         </Button>
       </div>
-      
+
       <Button className="w-full mt-2.5 gap-2 rounded-full border-border/70 hover:border-brand-blue hover:text-brand-blue font-semibold text-xs sm:text-sm" variant="outline" onClick={handleAddToCart}>
         <ShoppingCart className="h-3.5 w-3.5" />
         Add to Cart

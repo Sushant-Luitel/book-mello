@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server";
-import { requireAdmin, authErrorResponse } from "@/lib/auth";
+import { requireAdmin, requireAuth } from "@/lib/auth";
+import { handleRouteError } from "@/lib/api";
+import { listOrders } from "@/lib/services/orders";
 
-export async function GET() {
+// GET /api/v1/orders            -> all orders (admin)
+// GET /api/v1/orders?scope=mine -> the signed-in customer's orders (RLS-scoped)
+export async function GET(request: Request) {
   try {
-    const { supabase } = await requireAdmin();
-    const { data, error } = await supabase.from("orders").select("*, order_items(id, quantity)").order("created_at", { ascending: false });
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    return NextResponse.json({ data: data ?? [] });
-  } catch (error) { return authErrorResponse(error); }
+    const mine = new URL(request.url).searchParams.get("scope") === "mine";
+    const { supabase, user } = mine ? await requireAuth() : await requireAdmin();
+    return NextResponse.json({ data: await listOrders(supabase, mine ? user.id : undefined) });
+  } catch (error) {
+    return handleRouteError(error);
+  }
 }

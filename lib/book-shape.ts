@@ -13,7 +13,9 @@ export type StoreBook = {
   images?: string[];
 };
 
-export function toStoreBook(row: DatabaseBook | Record<string, unknown>): StoreBook {
+export type RatingStats = { avg_rating: number; review_count: number };
+
+export function toStoreBook(row: DatabaseBook | Record<string, unknown>, stats?: RatingStats): StoreBook {
   const available = row.stock !== false;
   const rawImage = typeof row.image_url === "string" ? row.image_url : undefined;
   const bucket = process.env.NEXT_PUBLIC_SUPABASE_BOOKS_BUCKET;
@@ -43,8 +45,9 @@ export function toStoreBook(row: DatabaseBook | Record<string, unknown>): StoreB
     title: String(row.title),
     author: String(row.author),
     price: parsedPrice,
-    rating: 4.6 + ((String(row.id).charCodeAt(0) % 4) * 0.1),
-    reviews: 12 + ((String(row.id).charCodeAt(1) || 5) * 3),
+    // Real aggregates from public.book_rating_stats; 0 means "no reviews yet".
+    rating: stats?.avg_rating ?? 0,
+    reviews: stats?.review_count ?? 0,
     cover,
     category: row.category ? String(row.category) : undefined,
     isNew: Boolean(row.is_new ?? false),
