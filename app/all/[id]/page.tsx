@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { Star, ShoppingCart, Heart, Share2, Truck, ShieldCheck, ChevronDown, Check, Zap } from "lucide-react";
+import { ShoppingCart, Heart, Share2, Truck, ShieldCheck, ChevronDown, Check, Zap } from "lucide-react";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,9 @@ import { Badge } from "@/components/ui/badge";
 import type { StoreBook } from "@/lib/book-shape";
 import { formatNpr } from "@/lib/currency";
 import { useCart } from "@/lib/cart-context";
+import { useWishlist } from "@/lib/wishlist-context";
+import { BookReviews, Stars } from "@/components/reviews/book-reviews";
+import type { ReviewSummary } from "@/lib/services/reviews";
 
 export default function BookDetailsPage() {
   const params = useParams();
@@ -24,6 +27,10 @@ export default function BookDetailsPage() {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("description");
   const [mainImage, setMainImage] = useState<string | null>(null);
+  const [summary, setSummary] = useState<Pick<ReviewSummary, "average" | "count"> | null>(null);
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const { has, toggle } = useWishlist();
+  const handleSummaryChange = useCallback((next: ReviewSummary) => setSummary({ average: next.average, count: next.count }), []);
 
   useEffect(() => {
     if (book) setMainImage(book.cover);
@@ -114,18 +121,27 @@ export default function BookDetailsPage() {
               </h1>
               <p className="text-xl text-muted-foreground mb-4">by <span className="text-foreground font-medium">{book.author}</span></p>
               
-              <div className="flex items-center gap-4 mb-6">
-                <div className="flex items-center gap-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star 
-                      key={star} 
-                      className={`h-4 w-4 ${star <= Math.round(book.rating) ? 'fill-accent text-accent' : 'fill-muted text-muted'}`} 
-                    />
-                  ))}
-                  <span className="ml-1 font-medium text-sm">{book.rating.toFixed(1)}</span>
-                </div>
-                <span className="text-sm text-muted-foreground underline cursor-pointer">{book.reviews} Reviews</span>
-              </div>
+              {(() => {
+                const average = summary?.average ?? book.rating;
+                const count = summary?.count ?? book.reviews;
+                return (
+                  <div className="flex items-center gap-4 mb-6">
+                    {count > 0 ? (
+                      <div className="flex items-center gap-2">
+                        <Stars value={average} />
+                        <span className="font-medium text-sm">{average.toFixed(1)}</span>
+                      </div>
+                    ) : null}
+                    <button
+                      type="button"
+                      className="text-sm text-muted-foreground underline"
+                      onClick={() => { setActiveTab("reviews"); tabsRef.current?.scrollIntoView({ behavior: "smooth" }); }}
+                    >
+                      {count > 0 ? `${count} Review${count > 1 ? "s" : ""}` : "Be the first to review"}
+                    </button>
+                  </div>
+                );
+              })()}
 
               <div className="flex items-end gap-3 mb-6">
                 {book.discountedPrice ? (
@@ -183,6 +199,17 @@ export default function BookDetailsPage() {
                   >
                     <Zap className="h-4 w-4 fill-current" /> Buy Now (COD)
                   </Button>
+
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    className={`h-12 w-12 shrink-0 rounded-full self-start sm:self-auto ${has(book.id) ? "border-brand-gold text-brand-gold" : ""}`}
+                    aria-pressed={has(book.id)}
+                    aria-label={has(book.id) ? "Remove from wishlist" : "Add to wishlist"}
+                    onClick={() => void toggle({ id: book.id, title: book.title })}
+                  >
+                    <Heart className={`h-5 w-5 ${has(book.id) ? "fill-current" : ""}`} />
+                  </Button>
                 </div>
               </div>
 
@@ -200,7 +227,7 @@ export default function BookDetailsPage() {
           </div>
 
           {/* Tabs */}
-          <div className="mb-16">
+          <div className="mb-16" ref={tabsRef}>
             <div className="flex border-b border-border">
               <button 
                 className={`px-6 py-3 font-medium text-sm transition-colors relative ${activeTab === 'description' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
@@ -220,7 +247,7 @@ export default function BookDetailsPage() {
                 className={`px-6 py-3 font-medium text-sm transition-colors relative ${activeTab === 'reviews' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
                 onClick={() => setActiveTab('reviews')}
               >
-                Reviews ({book.reviews})
+                Reviews ({summary?.count ?? book.reviews})
                 {activeTab === 'reviews' && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary"></div>}
               </button>
             </div>
@@ -252,66 +279,7 @@ export default function BookDetailsPage() {
                 </div>
               )}
 
-              {activeTab === 'reviews' && (
-                <div className="max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-12">
-                  <div className="md:col-span-1 space-y-6">
-                    <div className="text-center md:text-left">
-                      <h3 className="text-4xl font-bold font-serif mb-2">{book.rating.toFixed(1)}</h3>
-                      <div className="flex items-center justify-center md:justify-start gap-1 mb-2">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Star key={star} className={`h-5 w-5 ${star <= Math.round(book.rating) ? 'fill-accent text-accent' : 'fill-muted text-muted'}`} />
-                        ))}
-                      </div>
-                      <p className="text-muted-foreground text-sm">Based on {book.reviews} reviews</p>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      {[5, 4, 3, 2, 1].map((rating) => (
-                        <div key={rating} className="flex items-center text-sm">
-                          <span className="w-12">{rating} Stars</span>
-                          <div className="flex-1 mx-3 h-2 rounded-full bg-muted overflow-hidden">
-                            <div className="h-full bg-accent" style={{ width: rating === 5 ? '80%' : rating === 4 ? '15%' : '2%' }}></div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    
-                    <Button variant="outline" className="w-full">Write a Review</Button>
-                  </div>
-                  
-                  <div className="md:col-span-2 space-y-8">
-                    {/* Mock Reviews */}
-                    {[1, 2, 3].map((review) => (
-                      <div key={review} className="border-b border-border pb-8 last:border-0">
-                        <div className="flex justify-between items-start mb-3">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
-                              {String.fromCharCode(64 + review)}
-                            </div>
-                            <div>
-                              <p className="font-medium text-sm">User {String.fromCharCode(64 + review)}</p>
-                              <div className="flex text-accent mt-0.5">
-                                {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="h-3 w-3 fill-current" />)}
-                              </div>
-                            </div>
-                          </div>
-                          <span className="text-xs text-muted-foreground">Oct {10 + review}, 2023</span>
-                        </div>
-                        <h4 className="font-semibold text-sm mb-2">Absolutely loved it!</h4>
-                        <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                          This book was incredible from start to finish. The character development was phenomenal, and I found myself unable to put it down. Highly recommend to anyone who enjoys this genre!
-                        </p>
-                        <div className="flex gap-4 text-xs font-medium text-muted-foreground">
-                          <button className="flex items-center gap-1 hover:text-foreground transition-colors">
-                            <span>Helpful (12)</span>
-                          </button>
-                          <button className="hover:text-foreground transition-colors">Report</button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+              {activeTab === 'reviews' && <BookReviews bookId={book.id} onSummaryChange={handleSummaryChange} />}
             </div>
           </div>
         </div>

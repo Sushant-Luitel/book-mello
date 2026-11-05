@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireAdmin, authErrorResponse } from "@/lib/auth";
 import { parseBody } from "@/lib/api";
 import { toStoreBook } from "@/lib/book-shape";
+import { attachRatings } from "@/lib/services/ratings";
 
 const bookSchema = z.object({ title: z.string().min(1), author: z.string().min(1), description: z.string().nullable().optional(), price: z.coerce.number().nonnegative(), stock: z.boolean().default(true), image_url: z.string().nullable().optional(), category: z.string().nullable().optional() });
 
@@ -31,7 +32,8 @@ export async function GET(request: Request) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   const total = count ?? 0;
   const categories = [...new Set((categoryResult.data ?? []).map((row) => row.category).filter(Boolean))].sort();
-  return NextResponse.json({ data: (data ?? []).map((row) => ({ ...toStoreBook(row as Record<string, unknown>), image_url: row.image_url })), pagination: { page: filters.page, pageSize: filters.pageSize, total, totalPages: Math.max(1, Math.ceil(total / filters.pageSize)) }, facets: { categories } });
+  const books = await attachRatings(supabase, (data ?? []).map((row) => ({ ...toStoreBook(row as Record<string, unknown>), image_url: row.image_url })));
+  return NextResponse.json({ data: books, pagination: { page: filters.page, pageSize: filters.pageSize, total, totalPages: Math.max(1, Math.ceil(total / filters.pageSize)) }, facets: { categories } });
 }
 
 export async function POST(request: Request) {

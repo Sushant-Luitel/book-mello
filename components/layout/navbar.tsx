@@ -13,6 +13,7 @@ import {
   Sun,
   ChevronDown,
   ArrowRight,
+  Heart,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { usePathname, useRouter } from "next/navigation";
@@ -22,6 +23,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { CartDrawer } from "@/components/layout/cart-drawer";
 import { useCart } from "@/lib/cart-context";
+import { useWishlist } from "@/lib/wishlist-context";
 import { createClient } from "@/lib/supabase/client";
 const categoryGroups = [
   {
@@ -133,6 +135,7 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isCartOpen, setIsCartOpen, totalCount } = useCart();
+  const { count: wishlistCount } = useWishlist();
   const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState<{
     id: string;
@@ -380,6 +383,22 @@ export function Navbar() {
                 <span className="sr-only">Toggle theme</span>
               </Button>
 
+              <Link href="/wishlist" aria-label={`Wishlist${wishlistCount ? `, ${wishlistCount} saved` : ""}`}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative h-9 w-9 rounded-full"
+                  tabIndex={-1}
+                >
+                  <Heart className={cn("h-4 w-4", pathname === "/wishlist" && "fill-current text-accent")} />
+                  {wishlistCount > 0 && (
+                    <Badge className="absolute -top-1.5 -right-1.5 h-4 min-w-4 px-1 flex items-center justify-center p-0 text-[10px] bg-brand-gold text-slate-900 font-bold border-none">
+                      {wishlistCount}
+                    </Badge>
+                  )}
+                </Button>
+              </Link>
+
               <Link href={user ? "/profile" : "/login"}>
                 <Button
                   variant="ghost"
@@ -484,6 +503,16 @@ export function Navbar() {
                 onClose={() => setMobileMenuOpen(false)}
               />
               <div className="h-px bg-border my-2"></div>
+              <Link
+                href="/wishlist"
+                className={cn(
+                  "px-4 py-2.5 rounded-lg hover:bg-muted font-medium flex items-center gap-2",
+                  pathname === "/wishlist" && "bg-muted text-accent",
+                )}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Heart className="h-4 w-4" /> Wishlist{wishlistCount > 0 && ` (${wishlistCount})`}
+              </Link>
               <Link
                 href="/login"
                 className="px-4 py-2.5 rounded-lg hover:bg-muted font-medium flex items-center gap-2"
